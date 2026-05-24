@@ -563,8 +563,70 @@ footer{
 @keyframes spin{to{transform:rotate(360deg);}}
 .fade-in{animation:fadeSlide .5s ease both;}
 
-/* RESPONSIVE */
-@media(max-width:900px){
+/* ======================== FLOATING SUPPORT CHAT ======================== */
+.support-fab{
+  position:fixed;bottom:1.8rem;right:1.8rem;z-index:3000;
+  display:flex;flex-direction:column;align-items:flex-end;gap:.8rem;
+}
+.support-btn{
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,var(--cyan),var(--cyan2));
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;
+  box-shadow:0 4px 24px rgba(0,212,255,.45),0 8px 32px rgba(0,0,0,.4);
+  transition:all .25s;
+  position:relative;
+}
+.support-btn:hover{transform:scale(1.1);box-shadow:0 6px 32px rgba(0,212,255,.6),0 8px 40px rgba(0,0,0,.5);}
+.support-btn .notif-dot{
+  position:absolute;top:2px;right:2px;
+  width:12px;height:12px;background:var(--red);
+  border-radius:50%;border:2px solid var(--bg);
+  animation:pulse 2s infinite;
+}
+.support-chat{
+  width:340px;
+  background:var(--bg-card);
+  border:1px solid var(--border-bright);
+  border-radius:20px;
+  box-shadow:var(--shadow),var(--shadow-cyan);
+  overflow:hidden;
+  animation:slideUp .3s ease;
+  display:none;
+}
+.support-chat.open{display:block;}
+.sc-head{
+  background:linear-gradient(135deg,var(--bg-card2),var(--bg-card3));
+  border-bottom:1px solid var(--border);
+  padding:1rem 1.2rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sc-head-info{display:flex;align-items:center;gap:.8rem;}
+.sc-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--cyan-glow);border:2px solid var(--border-bright);
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+.sc-head-name{font-family:var(--font-head);font-weight:600;font-size:.9rem;}
+.sc-head-status{font-size:.72rem;color:var(--green);display:flex;align-items:center;gap:.3rem;}
+.sc-head-status::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;}
+.sc-close{background:none;border:none;color:var(--white-dim);cursor:pointer;font-size:1rem;padding:.2rem;transition:color .2s;}
+.sc-close:hover{color:var(--red);}
+.sc-body{padding:1rem;max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:.7rem;}
+.sc-msg{padding:.6rem .9rem;border-radius:10px;font-size:.84rem;line-height:1.5;max-width:85%;}
+.sc-msg.agent{background:var(--bg-card2);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:3px;}
+.sc-msg.agent span{display:block;font-size:.7rem;color:var(--white-dim);margin-top:.3rem;font-family:var(--font-mono);}
+.sc-msg.user{background:var(--cyan-glow);border:1px solid var(--border-bright);align-self:flex-end;border-bottom-right-radius:3px;color:var(--white);}
+.sc-quick{padding:.5rem 1rem;display:flex;gap:.4rem;flex-wrap:wrap;border-top:1px solid var(--border);}
+.sc-quick-btn{padding:.3rem .7rem;border:1px solid var(--border-bright);border-radius:50px;font-size:.75rem;color:var(--cyan);background:var(--cyan-glow2);cursor:pointer;transition:all .2s;font-family:var(--font-mono);}
+.sc-quick-btn:hover{background:var(--cyan-glow);border-color:var(--cyan);}
+.sc-footer{padding:.7rem 1rem;border-top:1px solid var(--border);display:flex;gap:.5rem;}
+.sc-input{flex:1;background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:var(--font-body);font-size:.85rem;padding:.5rem .8rem;}
+.sc-input:focus{outline:none;border-color:var(--cyan);}
+.sc-send{background:var(--cyan);border:none;color:var(--bg);width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
+.sc-send:hover{background:var(--cyan3);box-shadow:0 0 12px rgba(0,212,255,.4);}
+
   .footer-inner{grid-template-columns:1fr 1fr;}
   .charts-row{grid-template-columns:1fr;}
   .contact-wrap{grid-template-columns:1fr;}
@@ -928,7 +990,7 @@ footer{
     <div class="sidebar-item" id="nav-profile" onclick="showDash('dash-profile')">
       <span class="s-icon">👤</span> Profile / KYC
     </div>
-    <div class="sidebar-item" id="nav-support" onclick="showDash('dash-support')">
+    <div class="sidebar-item" id="nav-support" onclick="toggleSupportChat()">
       <span class="s-icon">💬</span> Support
     </div>
 
@@ -1052,22 +1114,33 @@ footer{
           <div class="form-group"><label class="form-label">Entry Time *</label><input type="time" class="form-input" id="t-time"></div>
           <div class="form-group">
             <label class="form-label">Session *</label>
-            <select class="form-select" id="t-session">
+            <select class="form-select" id="t-session" onchange="handleSessionChange()">
               <option value="">-- Select --</option>
-              <option>NY AM</option><option>NY PM</option><option>CBDR</option>
-              <option>London/Asia</option><option>London Open</option><option>London Close</option><option>NY Launch</option>
+              <option value="NY AM">NY AM</option>
+              <option value="NY PM">NY PM (= CBDR for Forex)</option>
+              <option value="CBDR">CBDR (Currencies only)</option>
+              <option value="London/Asia">London/Asia</option>
+              <option value="London Open">London Open</option>
+              <option value="London Close">London Close</option>
+              <option value="NY Launch">NY Launch</option>
             </select>
+            <div id="cbdr-warning" style="display:none;margin-top:.4rem;padding:.5rem .8rem;background:rgba(255,214,0,.08);border:1px solid rgba(255,214,0,.25);border-radius:6px;font-size:.78rem;color:var(--yellow);">
+              ⚠️ <strong>CBDR</strong> is only valid for <strong>Currency pairs (Forex)</strong>. Not applicable to Stocks, Indices or Crypto.
+            </div>
           </div>
           <div class="form-group">
             <label class="form-label">Pair *</label>
-            <select class="form-select" id="t-pair">
+            <select class="form-select" id="t-pair" onchange="handlePairChange()">
               <option value="">-- Select --</option>
-              <optgroup label="Forex Majors"><option>EURUSD</option><option>GBPUSD</option><option>USDJPY</option><option>USDCHF</option><option>AUDUSD</option><option>NZDUSD</option><option>USDCAD</option></optgroup>
-              <optgroup label="Forex Minors"><option>EURGBP</option><option>EURJPY</option><option>GBPJPY</option><option>EURAUD</option><option>EURNZD</option><option>GBPAUD</option><option>GBPCAD</option><option>AUDCAD</option><option>AUDJPY</option><option>NZDJPY</option></optgroup>
-              <optgroup label="Exotics"><option>USDTRY</option><option>USDZAR</option><option>USDMXN</option><option>USDSEK</option></optgroup>
-              <optgroup label="Crypto"><option>BTCUSD</option><option>ETHUSD</option><option>BNBUSD</option><option>SOLUSD</option><option>XRPUSD</option><option>ADAUSD</option></optgroup>
-              <optgroup label="Indices / CFDs"><option>US30</option><option>NAS100</option><option>SP500</option><option>GER40</option><option>UK100</option><option>GOLD (XAU/USD)</option><option>SILVER</option><option>OIL (WTI)</option></optgroup>
+              <optgroup label="Forex Majors" data-type="forex"><option data-type="forex">EURUSD</option><option data-type="forex">GBPUSD</option><option data-type="forex">USDJPY</option><option data-type="forex">USDCHF</option><option data-type="forex">AUDUSD</option><option data-type="forex">NZDUSD</option><option data-type="forex">USDCAD</option></optgroup>
+              <optgroup label="Forex Minors" data-type="forex"><option data-type="forex">EURGBP</option><option data-type="forex">EURJPY</option><option data-type="forex">GBPJPY</option><option data-type="forex">EURAUD</option><option data-type="forex">EURNZD</option><option data-type="forex">GBPAUD</option><option data-type="forex">GBPCAD</option><option data-type="forex">AUDCAD</option><option data-type="forex">AUDJPY</option><option data-type="forex">NZDJPY</option></optgroup>
+              <optgroup label="Exotics" data-type="forex"><option data-type="forex">USDTRY</option><option data-type="forex">USDZAR</option><option data-type="forex">USDMXN</option><option data-type="forex">USDSEK</option></optgroup>
+              <optgroup label="Crypto" data-type="crypto"><option data-type="crypto">BTCUSD</option><option data-type="crypto">ETHUSD</option><option data-type="crypto">BNBUSD</option><option data-type="crypto">SOLUSD</option><option data-type="crypto">XRPUSD</option><option data-type="crypto">ADAUSD</option></optgroup>
+              <optgroup label="Indices / CFDs" data-type="index"><option data-type="index">US30</option><option data-type="index">NAS100</option><option data-type="index">SP500</option><option data-type="index">GER40</option><option data-type="index">UK100</option><option data-type="index">GOLD (XAU/USD)</option><option data-type="index">SILVER</option><option data-type="index">OIL (WTI)</option></optgroup>
             </select>
+            <div id="cbdr-pair-warning" style="display:none;margin-top:.4rem;padding:.5rem .8rem;background:rgba(255,59,92,.08);border:1px solid rgba(255,59,92,.25);border-radius:6px;font-size:.78rem;color:var(--red);">
+              ❌ <strong>CBDR</strong> cannot be used with this instrument. Please switch to a Forex currency pair or change session.
+            </div>
           </div>
           <div class="form-group">
             <label class="form-label">Direction *</label>
@@ -1174,13 +1247,17 @@ footer{
     <!-- ANALYTICS -->
     <div id="dash-analytics" class="dash-section" style="display:none;">
       <div class="page-header"><div><div class="page-title">Analytics</div><div class="page-sub">Performance breakdown and insights</div></div></div>
+
+      <!-- TOP STATS -->
       <div class="stats-row">
-        <div class="sc"><div class="sc-label">BEST SESSION</div><div class="sc-val c">NY AM</div><div class="sc-delta">80% win rate</div></div>
-        <div class="sc"><div class="sc-label">BEST PAIR</div><div class="sc-val c">EURUSD</div><div class="sc-delta">+2.4R avg</div></div>
-        <div class="sc"><div class="sc-label">AVG R:R</div><div class="sc-val g">1:2.3</div><div class="sc-delta">Across 3 trades</div></div>
-        <div class="sc"><div class="sc-label">FOMO / REVENGE</div><div class="sc-val r">1/3</div><div class="sc-delta">33% undisciplined</div></div>
+        <div class="sc"><div class="sc-label">BEST SESSION</div><div class="sc-val c" id="an-best-sess">NY AM</div><div class="sc-delta" id="an-best-sess-d">80% win rate</div></div>
+        <div class="sc"><div class="sc-label">BEST PAIR</div><div class="sc-val c" id="an-best-pair">EURUSD</div><div class="sc-delta">highest P&L</div></div>
+        <div class="sc"><div class="sc-label">AVG R:R</div><div class="sc-val g" id="an-avg-rr">1:2.3</div><div class="sc-delta" id="an-rr-d">Across trades</div></div>
+        <div class="sc"><div class="sc-label">FOMO / REVENGE</div><div class="sc-val r" id="an-bad-psy">1/3</div><div class="sc-delta">undisciplined</div></div>
       </div>
-      <div class="charts-row">
+
+      <!-- SESSIONS + PSYCH -->
+      <div class="charts-row" style="margin-bottom:1.2rem;">
         <div class="chart-box">
           <div class="chart-box-title">📊 P&L by Session</div>
           <svg width="100%" height="160" viewBox="0 0 400 160">
@@ -1209,6 +1286,30 @@ footer{
           </div>
         </div>
       </div>
+
+      <!-- BEST / WORST DAYS OF WEEK -->
+      <div class="chart-box" style="margin-bottom:1.2rem;">
+        <div class="chart-box-title">📅 Performance by Day of Week</div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.8rem;margin-top:.8rem;" id="days-chart">
+          <!-- filled by JS -->
+        </div>
+        <div style="display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap;" id="days-summary"></div>
+      </div>
+
+      <!-- BEST / WORST MONTHS -->
+      <div class="chart-box" style="margin-bottom:1.2rem;">
+        <div class="chart-box-title">📆 Performance by Month</div>
+        <div style="overflow-x:auto;">
+          <div style="display:flex;gap:.6rem;min-width:600px;align-items:flex-end;height:140px;padding-top:20px;" id="months-chart">
+            <!-- filled by JS -->
+          </div>
+          <div style="display:flex;gap:.6rem;min-width:600px;margin-top:.4rem;" id="months-labels">
+            <!-- filled by JS -->
+          </div>
+        </div>
+        <div style="display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap;" id="months-summary"></div>
+      </div>
+
     </div>
 
     <!-- RULES -->
@@ -1473,6 +1574,44 @@ footer{
   </div>
 </div>
 
+<!-- ===================== FLOATING SUPPORT CHAT ===================== -->
+<div class="support-fab" id="support-fab">
+  <!-- CHAT WINDOW -->
+  <div class="support-chat" id="support-chat">
+    <div class="sc-head">
+      <div class="sc-head-info">
+        <div class="sc-avatar">🎯</div>
+        <div>
+          <div class="sc-head-name">JournifyX Support</div>
+          <div class="sc-head-status">Online · Usually replies in &lt;1h</div>
+        </div>
+      </div>
+      <button class="sc-close" onclick="toggleSupportChat()">✕</button>
+    </div>
+    <div class="sc-body" id="sc-messages">
+      <div class="sc-msg agent">
+        👋 Hey! Welcome to JournifyX Support.<br>How can I help you today?
+        <span>JournifyX Bot · now</span>
+      </div>
+    </div>
+    <div class="sc-quick">
+      <div class="sc-quick-btn" onclick="sendQuick('Billing question')">💳 Billing</div>
+      <div class="sc-quick-btn" onclick="sendQuick('Bug report')">🐛 Bug</div>
+      <div class="sc-quick-btn" onclick="sendQuick('Feature request')">💡 Feature</div>
+      <div class="sc-quick-btn" onclick="sendQuick('Plan upgrade')">🚀 Upgrade</div>
+    </div>
+    <div class="sc-footer">
+      <input class="sc-input" id="sc-input-field" placeholder="Type your message..." onkeypress="if(event.key==='Enter')sendChatMsg()">
+      <button class="sc-send" onclick="sendChatMsg()">➤</button>
+    </div>
+  </div>
+  <!-- FAB BUTTON -->
+  <button class="support-btn" onclick="toggleSupportChat()" id="support-fab-btn" title="Contact Support">
+    💬
+    <div class="notif-dot" id="support-notif"></div>
+  </button>
+</div>
+
 <script>
 // ==================== STATE ====================
 let user = null;
@@ -1482,6 +1621,10 @@ let trades = [
   {date:'2025-01-15',time:'09:30',session:'NY AM',pair:'EURUSD',dir:'LONG',entry:1.08500,sl:1.08200,tp:1.09000,rr:'1:1.7',pipsSl:30,pipsTp:50,psy:'Confident, Disciplined',setup:'CHoCH confirmed H1, OB mitigated M15, entry on FVG',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
   {date:'2025-01-17',time:'14:15',session:'NY PM',pair:'GBPUSD',dir:'SHORT',entry:1.27000,sl:1.27300,tp:1.26500,rr:'1:1.7',pipsSl:30,pipsTp:50,psy:'FOMO',setup:'No clear setup, sudden impulse',result:'LOSS',setupOk:'No',rmOk:'Yes',slOk:'No'},
   {date:'2025-01-18',time:'10:00',session:'London Open',pair:'USDJPY',dir:'LONG',entry:148.500,sl:148.200,tp:149.200,rr:'1:2.3',pipsSl:30,pipsTp:70,psy:'In the Zone, Disciplined',setup:'FVG H4 filled, MSS M15, entry on EQH',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
+  {date:'2025-02-03',time:'10:15',session:'London Open',pair:'EURUSD',dir:'LONG',entry:1.07200,sl:1.06900,tp:1.07900,rr:'1:2.3',pipsSl:30,pipsTp:70,psy:'Confident',setup:'Order Block retest on M15',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
+  {date:'2025-02-10',time:'09:35',session:'NY AM',pair:'GBPUSD',dir:'SHORT',entry:1.26500,sl:1.26800,tp:1.25900,rr:'1:2.0',pipsSl:30,pipsTp:60,psy:'Disciplined',setup:'CHoCH on H1 + BOS confirmed',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
+  {date:'2025-03-05',time:'14:00',session:'NY PM',pair:'USDJPY',dir:'SHORT',entry:149.800,sl:150.100,tp:149.200,rr:'1:2.0',pipsSl:30,pipsTp:60,psy:'FOMO, Impatient',setup:'Weak setup, late entry',result:'LOSS',setupOk:'No',rmOk:'No',slOk:'No'},
+  {date:'2025-03-12',time:'10:00',session:'London Open',pair:'EURUSD',dir:'LONG',entry:1.08100,sl:1.07800,tp:1.08800,rr:'1:2.3',pipsSl:30,pipsTp:70,psy:'In the Zone',setup:'FVG on M15 after sweep of EQL',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
 ];
 let rules = ['Never trade without a confirmed setup','Max 1% risk per trade','No trades before 9:30 NY time','Respect the SL — never move it into loss'];
 let chosenPlan = 'free';
@@ -1506,6 +1649,7 @@ function showDash(id){
   if(id==='dash-trades') renderAll();
   if(id==='dash-rules') renderRules();
   if(id==='dash-new') updateUploadUI();
+  if(id==='dash-analytics') renderAnalytics();
 }
 
 // ==================== MODALS ====================
@@ -1565,7 +1709,6 @@ function demoLogin(){
   closeModal('modal-login');
   enterDash('Demo Trader');
 }
-
 function enterDash(name){
   document.getElementById('nav-greeting').textContent='👋 '+name;
   updatePlanUI();
@@ -1644,6 +1787,165 @@ function calcStats(){
   updatePlanUI();
 }
 
+// ==================== ANALYTICS ====================
+function renderAnalytics(){
+  renderDaysChart();
+  renderMonthsChart();
+}
+
+function getPnlScore(t){ return t.result==='WIN'?2:t.result==='LOSS'?-1:0; }
+
+function renderDaysChart(){
+  const dayNames=['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  const dayData={Monday:[],Tuesday:[],Wednesday:[],Thursday:[],Friday:[]};
+  trades.forEach(t=>{
+    const d=new Date(t.date);
+    const dn=dayNames[d.getDay()-1];
+    if(dn) dayData[dn].push(getPnlScore(t));
+  });
+
+  const totals=dayNames.map(d=>{
+    const arr=dayData[d];
+    const sum=arr.reduce((a,b)=>a+b,0);
+    const wins=arr.filter(v=>v>0).length;
+    const wr=arr.length?Math.round(wins/arr.length*100):0;
+    return {day:d,sum,wr,count:arr.length};
+  });
+
+  const maxAbs=Math.max(1,...totals.map(t=>Math.abs(t.sum)));
+  const bestDay=totals.reduce((a,b)=>b.sum>a.sum?b:a,totals[0]);
+  const worstDay=totals.reduce((a,b)=>b.sum<a.sum?b:a,totals[0]);
+
+  const dEl=document.getElementById('days-chart');
+  if(!dEl) return;
+  dEl.innerHTML=totals.map(t=>{
+    const isPos=t.sum>=0;
+    const pct=maxAbs>0?Math.abs(t.sum)/maxAbs*100:5;
+    const isBest=t.day===bestDay.day;
+    const isWorst=t.day===worstDay.day;
+    const border=isBest?'border:1.5px solid var(--green);':isWorst?'border:1.5px solid var(--red);':'border:1px solid var(--border);';
+    return `<div style="background:var(--bg-card2);${border}border-radius:10px;padding:.8rem .6rem;text-align:center;">
+      <div style="font-family:var(--font-mono);font-size:.68rem;color:var(--white-dim);margin-bottom:.6rem;">${t.day.substring(0,3).toUpperCase()}</div>
+      <div style="height:60px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:.5rem;">
+        <div style="width:28px;height:${Math.max(pct*.6,4)}%;background:${isPos?'rgba(0,255,176,.5)':'rgba(255,59,92,.5)'};border-radius:4px 4px 0 0;min-height:4px;max-height:60px;"></div>
+      </div>
+      <div style="font-family:var(--font-head);font-size:1rem;font-weight:700;color:${isPos?'var(--green)':'var(--red)'};">${isPos?'+':''}${t.sum}R</div>
+      <div style="font-size:.7rem;color:var(--white-dim);margin-top:.2rem;">${t.wr}% WR</div>
+      <div style="font-size:.65rem;color:var(--white-dim);">${t.count} trade${t.count!==1?'s':''}</div>
+      ${isBest?'<div style="font-size:.65rem;color:var(--green);margin-top:.3rem;font-weight:700;">🏆 BEST</div>':''}
+      ${isWorst&&t.sum<0?'<div style="font-size:.65rem;color:var(--red);margin-top:.3rem;font-weight:700;">⚠️ WORST</div>':''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('days-summary').innerHTML=`
+    <div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem;">
+      <span style="width:10px;height:10px;background:var(--green);border-radius:50%;display:inline-block;"></span>
+      <strong style="color:var(--green)">Best day:</strong> ${bestDay.day} (${bestDay.sum>=0?'+':''}${bestDay.sum}R · ${bestDay.wr}% WR)
+    </div>
+    <div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem;">
+      <span style="width:10px;height:10px;background:var(--red);border-radius:50%;display:inline-block;"></span>
+      <strong style="color:var(--red)">Worst day:</strong> ${worstDay.day} (${worstDay.sum>=0?'+':''}${worstDay.sum}R · ${worstDay.wr}% WR)
+    </div>`;
+}
+
+function renderMonthsChart(){
+  const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthData={};
+  for(let i=0;i<12;i++) monthData[i]={sum:0,wins:0,losses:0,count:0};
+
+  trades.forEach(t=>{
+    const m=new Date(t.date).getMonth();
+    monthData[m].sum+=getPnlScore(t);
+    monthData[m].count++;
+    if(t.result==='WIN') monthData[m].wins++;
+    if(t.result==='LOSS') monthData[m].losses++;
+  });
+
+  // Only render months that have trades or are between first/last trade month
+  const tradedMonths=trades.map(t=>new Date(t.date).getMonth());
+  const minM=Math.min(...tradedMonths);
+  const maxM=Math.max(...tradedMonths);
+  const range=[];
+  for(let i=minM;i<=maxM;i++) range.push(i);
+  if(range.length===0) range.push(0,1,2);
+
+  const values=range.map(m=>monthData[m]);
+  const maxAbs=Math.max(1,...values.map(v=>Math.abs(v.sum)));
+  const bestM=range.reduce((a,b)=>monthData[b].sum>monthData[a].sum?b:a,range[0]);
+  const worstM=range.reduce((a,b)=>monthData[b].sum<monthData[a].sum?b:a,range[0]);
+
+  const chartEl=document.getElementById('months-chart');
+  const labelsEl=document.getElementById('months-labels');
+  if(!chartEl||!labelsEl) return;
+
+  chartEl.innerHTML=range.map(m=>{
+    const d=monthData[m];
+    const isPos=d.sum>=0;
+    const barH=maxAbs>0?Math.max(Math.abs(d.sum)/maxAbs*100,4):4;
+    const isBest=m===bestM;
+    const isWorst=m===worstM&&d.sum<0;
+    const border=isBest?'border-top:2px solid var(--green);':isWorst?'border-top:2px solid var(--red);':'';
+    const wr=d.count?Math.round(d.wins/d.count*100):0;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;position:relative;min-width:42px;" title="${monthNames[m]}: ${d.sum>=0?'+':''}${d.sum}R · ${wr}% WR · ${d.count} trades">
+      ${isBest?'<div style="position:absolute;top:-16px;font-size:.65rem;color:var(--green);">🏆</div>':''}
+      ${isWorst?'<div style="position:absolute;top:-16px;font-size:.65rem;color:var(--red);">⚠️</div>':''}
+      <div style="font-family:var(--font-mono);font-size:.72rem;color:${isPos?'var(--green)':'var(--red)'};margin-bottom:.3rem;">${d.sum>=0?'+':''}${d.sum}R</div>
+      <div style="width:100%;height:${barH}px;background:${isPos?'rgba(0,255,176,.45)':'rgba(255,59,92,.45)'};border-radius:4px 4px 0 0;${border}min-height:4px;max-height:100px;"></div>
+    </div>`;
+  }).join('');
+
+  labelsEl.innerHTML=range.map(m=>{
+    const isBest=m===bestM;
+    const isWorst=m===worstM&&monthData[m].sum<0;
+    return `<div style="flex:1;text-align:center;font-family:var(--font-mono);font-size:.72rem;min-width:42px;color:${isBest?'var(--green)':isWorst?'var(--red)':'var(--white-dim)'};">${monthNames[m]}</div>`;
+  }).join('');
+
+  document.getElementById('months-summary').innerHTML=`
+    <div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem;">
+      <span style="width:10px;height:10px;background:var(--green);border-radius:50%;display:inline-block;"></span>
+      <strong style="color:var(--green)">Best month:</strong> ${monthNames[bestM]} (${monthData[bestM].sum>=0?'+':''}${monthData[bestM].sum}R · ${monthData[bestM].count} trades)
+    </div>
+    <div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem;">
+      <span style="width:10px;height:10px;background:var(--red);border-radius:50%;display:inline-block;"></span>
+      <strong style="color:var(--red)">Worst month:</strong> ${monthNames[worstM]} (${monthData[worstM].sum>=0?'+':''}${monthData[worstM].sum}R · ${monthData[worstM].count} trades)
+    </div>`;
+}
+
+// ==================== SESSION / PAIR VALIDATION ====================
+const FOREX_PAIRS=['EURUSD','GBPUSD','USDJPY','USDCHF','AUDUSD','NZDUSD','USDCAD',
+  'EURGBP','EURJPY','GBPJPY','EURAUD','EURNZD','GBPAUD','GBPCAD','AUDCAD','AUDJPY','NZDJPY',
+  'USDTRY','USDZAR','USDMXN','USDSEK'];
+
+function getPairType(pair){
+  if(!pair) return null;
+  if(FOREX_PAIRS.includes(pair)) return 'forex';
+  if(['BTCUSD','ETHUSD','BNBUSD','SOLUSD','XRPUSD','ADAUSD'].includes(pair)) return 'crypto';
+  return 'index';
+}
+
+function handleSessionChange(){
+  const sess=document.getElementById('t-session').value;
+  const pair=document.getElementById('t-pair').value;
+  const warn=document.getElementById('cbdr-warning');
+  if(sess==='CBDR') warn.style.display='block'; else warn.style.display='none';
+  checkCbdrPairConflict(sess,pair);
+}
+
+function handlePairChange(){
+  const sess=document.getElementById('t-session').value;
+  const pair=document.getElementById('t-pair').value;
+  checkCbdrPairConflict(sess,pair);
+}
+
+function checkCbdrPairConflict(sess,pair){
+  const warn=document.getElementById('cbdr-pair-warning');
+  if(sess==='CBDR' && pair && getPairType(pair)!=='forex'){
+    warn.style.display='block';
+  } else {
+    warn.style.display='none';
+  }
+}
+
 // ==================== TRADE FORM ====================
 function autoCalc(){
   const entry=parseFloat(document.getElementById('t-entry').value)||0;
@@ -1686,6 +1988,10 @@ function saveTrade(){
   const session=document.getElementById('t-session').value;
   const pair=document.getElementById('t-pair').value;
   if(!date||!session||!pair) return alert('Fill in required fields (Date, Session, Pair).');
+  // Block CBDR on non-forex
+  if(session==='CBDR' && getPairType(pair)!=='forex'){
+    return alert('⚠️ CBDR session is only valid for Forex currency pairs. Please change the session or select a Forex pair.');
+  }
   const entry=parseFloat(document.getElementById('t-entry').value)||0;
   const sl=parseFloat(document.getElementById('t-sl').value)||0;
   const tp=parseFloat(document.getElementById('t-tp').value)||0;
@@ -1713,6 +2019,8 @@ function resetForm(){
   document.getElementById('t-pair').value='';
   document.getElementById('t-result').value='WIN';
   document.getElementById('limit-alert').style.display='none';
+  document.getElementById('cbdr-warning').style.display='none';
+  document.getElementById('cbdr-pair-warning').style.display='none';
   clearUpload();
 }
 
@@ -1765,6 +2073,60 @@ function doUpgrade(p){
   plan=p;updatePlanUI();updateUploadUI();
   const names={starter:'Starter ($5/mo)',pro:'Pro ($15/mo)'};
   alert('✅ Plan updated: '+names[p]);
+}
+
+// ==================== FLOATING SUPPORT CHAT ====================
+let chatOpen=false;
+const BOT_REPLIES={
+  'billing question':'💳 For billing questions, email us at billing@journifyx.com or check your account settings.',
+  'bug report':'🐛 Please describe the bug in detail. Include which page/feature it happened on. We\'ll investigate ASAP.',
+  'feature request':'💡 We love suggestions! Describe the feature and we\'ll add it to our roadmap.',
+  'plan upgrade':'🚀 You can upgrade in Profile → My Plan. Starter is $5/mo (30 trades) or Pro $15/mo (unlimited).',
+};
+
+function toggleSupportChat(){
+  chatOpen=!chatOpen;
+  const chat=document.getElementById('support-chat');
+  const btn=document.getElementById('support-fab-btn');
+  const notif=document.getElementById('support-notif');
+  chat.classList.toggle('open',chatOpen);
+  btn.textContent=chatOpen?'✕':'💬';
+  if(chatOpen){btn.style.background='rgba(255,59,92,.8)';notif.style.display='none';}
+  else{btn.style.background='';btn.innerHTML='💬<div class="notif-dot" id="support-notif" style="display:none;"></div>';}
+  if(chatOpen) setTimeout(()=>document.getElementById('sc-input-field')?.focus(),200);
+}
+
+function sendChatMsg(){
+  const inp=document.getElementById('sc-input-field');
+  const msg=inp.value.trim();
+  if(!msg) return;
+  appendMsg(msg,'user');
+  inp.value='';
+  setTimeout(()=>{
+    const lower=msg.toLowerCase();
+    let reply='Thanks for reaching out! Our team will get back to you within a few hours. For urgent issues, email support@journifyx.com 💬';
+    for(const [k,v] of Object.entries(BOT_REPLIES)){
+      if(lower.includes(k)){reply=v;break;}
+    }
+    appendMsg(reply,'agent');
+  },800);
+}
+
+function sendQuick(topic){
+  appendMsg(topic,'user');
+  setTimeout(()=>{
+    const reply=BOT_REPLIES[topic.toLowerCase()]||'Thanks! Our team will get back to you shortly. 🙌';
+    appendMsg(reply,'agent');
+  },600);
+}
+
+function appendMsg(text,type){
+  const body=document.getElementById('sc-messages');
+  const div=document.createElement('div');
+  div.className='sc-msg '+type;
+  div.innerHTML=text+(type==='agent'?'<span>JournifyX Support · now</span>':'');
+  body.appendChild(div);
+  body.scrollTop=body.scrollHeight;
 }
 
 // ==================== HELPERS ====================
