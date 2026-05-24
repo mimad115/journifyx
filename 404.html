@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — JournifyX</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#040C1A;color:#F0F8FF;font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+.container{position:relative;z-index:1;}
+.orb{position:fixed;width:400px;height:400px;background:radial-gradient(circle,rgba(0,150,255,.08),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+.logo{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:2.5rem;}
+.logo-text{font-family:'Clash Display',sans-serif;font-size:1.4rem;font-weight:700;}
+.logo-text span{color:#00D4FF;}
+.code{font-family:'Clash Display',sans-serif;font-size:7rem;font-weight:700;line-height:1;background:linear-gradient(135deg,#00D4FF,#8B5CF6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+h2{font-family:'Clash Display',sans-serif;font-size:1.6rem;margin:1rem 0 .8rem;}
+p{color:rgba(200,230,255,.6);margin-bottom:2rem;font-size:1rem;}
+.btn{display:inline-block;padding:.85rem 2rem;background:#00D4FF;color:#040C1A;border-radius:10px;text-decoration:none;font-weight:700;transition:all .2s;}
+.btn:hover{background:#33DEFF;box-shadow:0 0 28px rgba(0,212,255,.45);}
+</style>
+</head>
+<body>
+<div class="orb"></div>
+<div class="container">
+  <div class="logo">
+    <svg width="30" height="30" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#071426"/><path d="M7 25 L13 15 L19 19.5 L28 8" stroke="#00D4FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="28" cy="8" r="2.8" fill="#00D4FF"/></svg>
+    <div class="logo-text">Journify<span>X</span></div>
+  </div>
+  <div class="code">404</div>
+  <h2>Page Not Found</h2>
+  <p>This page doesn't exist or has been moved.<br>Get back to your trading journal.</p>
+  <a href="/journifyx/" class="btn">← Back to JournifyX</a>
+</div>
+</body>
+</html>

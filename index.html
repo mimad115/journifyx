@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="JournifyX — The most complete trading journal SaaS. Track every trade, master your discipline, analyze your psychology.">
+<meta name="keywords" content="trading journal, forex journal, trade tracker, ICT, SMC, risk management, psychology, funded account">
+<meta property="og:title" content="JournifyX — Professional Trading Journal">
+<meta property="og:description" content="Track every trade. Master your discipline. Log sessions, pairs, R:R, SL/TP, psychology and more.">
+<meta property="og:type" content="website">
+<title>JournifyX — Professional Trading Journal</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23050A14'/><path d='M6 22 L12 14 L18 18 L26 8' stroke='%2300D4FF' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/><circle cx='26' cy='8' r='2.5' fill='%2300D4FF'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #040C1A;
+  --bg-card: #071426;
+  --bg-card2: #0A1D38;
+  --bg-card3: #0D2448;
+  --blue-deep: #0B2447;
+  --cyan: #00D4FF;
+  --cyan2: #00AACC;
+  --cyan3: #33DEFF;
+  --cyan-glow: rgba(0,212,255,.14);
+  --cyan-glow2: rgba(0,212,255,.06);
+  --cyan-glow3: rgba(0,212,255,.03);
+  --white: #F0F8FF;
+  --white-dim: rgba(200,230,255,0.65);
+  --white-faint: rgba(200,230,255,0.07);
+  --border: rgba(0,212,255,.12);
+  --border-bright: rgba(0,212,255,.35);
+  --border-glow: rgba(0,212,255,.6);
+  --green: #00FFB0;
+  --green-dim: rgba(0,255,176,.12);
+  --red: #FF3B5C;
+  --red-dim: rgba(255,59,92,.12);
+  --yellow: #FFD600;
+  --yellow-dim: rgba(255,214,0,.1);
+  --orange: #FF6B35;
+  --purple: #8B5CF6;
+  --font-head: 'Clash Display', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 20px 60px rgba(0,0,0,.5);
+  --shadow-cyan: 0 0 40px rgba(0,212,255,.15);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{background:var(--bg);color:var(--white);font-family:var(--font-body);overflow-x:hidden;min-height:100vh;line-height:1.6;}
+
+/* NOISE + GRID OVERLAY */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;z-index:0;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(0,100,200,.12),transparent);
+  pointer-events:none;z-index:0;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--cyan2),var(--cyan));border-radius:3px;}
+
+.page{display:none;min-height:100vh;position:relative;z-index:1;}
+.page.active{display:block;}
+
+/* ======================== NAV ======================== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  height:66px;padding:0 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(4,12,26,.88);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  display:flex;align-items:center;gap:.6rem;
+  cursor:pointer;text-decoration:none;
+}
+.logo-svg{flex-shrink:0;}
+.logo-text{font-family:var(--font-head);font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.logo-text span{color:var(--cyan);}
+.nav-center{display:flex;gap:2rem;align-items:center;}
+.nav-center a{color:var(--white-dim);text-decoration:none;font-size:.88rem;font-weight:500;cursor:pointer;transition:color .2s;letter-spacing:.01em;}
+.nav-center a:hover{color:var(--cyan);}
+.nav-right{display:flex;gap:.7rem;align-items:center;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-body);font-weight:600;transition:all .22s;text-decoration:none;border:none;}
+.btn-ghost{padding:.5rem 1.1rem;background:transparent;border:1px solid var(--border-bright);color:var(--cyan);font-size:.85rem;}
+.btn-ghost:hover{background:var(--cyan-glow);border-color:var(--border-glow);}
+.btn-solid{padding:.5rem 1.4rem;background:var(--cyan);color:var(--bg);font-size:.85rem;}
+.btn-solid:hover{background:var(--cyan3);box-shadow:0 0 28px rgba(0,212,255,.45);}
+.btn-lg{padding:.9rem 2.2rem;font-size:1rem;border-radius:var(--radius);}
+.btn-xl{padding:1rem 2.6rem;font-size:1.05rem;border-radius:var(--radius);}
+.btn-outline-lg{padding:.85rem 2rem;background:transparent;border:1.5px solid var(--border-bright);color:var(--white);font-size:1rem;border-radius:var(--radius);}
+.btn-outline-lg:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-glow2);}
+.btn-full{width:100%;padding:.9rem;justify-content:center;}
+.btn-danger{background:var(--red);color:white;padding:.3rem .7rem;border-radius:6px;font-size:.78rem;}
+
+/* ======================== HERO ======================== */
+.hero{
+  padding:130px 2rem 100px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.hero-orb1{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(0,150,255,.1),transparent 70%);top:-100px;left:50%;transform:translateX(-50%);pointer-events:none;animation:breathe 6s ease-in-out infinite;}
+.hero-orb2{position:absolute;width:300px;height:300px;background:radial-gradient(circle,rgba(0,212,255,.06),transparent 70%);bottom:0;right:5%;pointer-events:none;}
+.hero-orb3{position:absolute;width:200px;height:200px;background:radial-gradient(circle,rgba(139,92,246,.06),transparent 70%);bottom:20%;left:3%;pointer-events:none;}
+@keyframes breathe{0%,100%{transform:translateX(-50%) scale(1);}50%{transform:translateX(-50%) scale(1.15);}}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.35rem 1.1rem;
+  border:1px solid var(--border-bright);
+  border-radius:50px;
+  background:var(--cyan-glow2);
+  font-size:.78rem;color:var(--cyan);
+  font-family:var(--font-mono);letter-spacing:.08em;
+  margin-bottom:2rem;
+  animation:fadeSlide .8s ease both;
+}
+.hero-eyebrow .dot{width:6px;height:6px;background:var(--cyan);border-radius:50%;animation:pulse 2s infinite;}
+
+.hero h1{
+  font-family:var(--font-head);
+  font-size:clamp(2.6rem,6.5vw,5.5rem);
+  font-weight:700;
+  line-height:1.04;
+  letter-spacing:-.03em;
+  margin-bottom:1.8rem;
+  animation:fadeSlide .8s .1s ease both;
+  opacity:0;
+}
+.grad-text{
+  background:linear-gradient(135deg,var(--cyan) 0%,#60A5FA 50%,var(--purple) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-desc{
+  font-size:1.1rem;color:var(--white-dim);
+  max-width:580px;margin:0 auto 2.8rem;
+  line-height:1.75;
+  animation:fadeSlide .8s .2s ease both;opacity:0;
+}
+.hero-actions{
+  display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;
+  animation:fadeSlide .8s .3s ease both;opacity:0;
+}
+.hero-trust{
+  margin-top:4rem;
+  display:flex;gap:3rem;justify-content:center;flex-wrap:wrap;
+  animation:fadeSlide .8s .45s ease both;opacity:0;
+}
+.trust-item{text-align:center;}
+.trust-num{font-family:var(--font-head);font-size:2.2rem;font-weight:700;color:var(--cyan);}
+.trust-label{font-size:.78rem;color:var(--white-dim);margin-top:.2rem;text-transform:uppercase;letter-spacing:.06em;}
+
+/* MOCKUP PREVIEW */
+.hero-mockup{
+  max-width:900px;margin:4rem auto 0;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;
+  box-shadow:var(--shadow),var(--shadow-cyan);
+  animation:fadeSlide .8s .55s ease both;opacity:0;
+}
+.mockup-bar{
+  height:38px;background:var(--bg-card2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 1rem;gap:.5rem;
+}
+.mockup-dot{width:10px;height:10px;border-radius:50%;}
+.mockup-content{display:flex;gap:0;}
+.mockup-sidebar{width:160px;background:var(--bg-card3);border-right:1px solid var(--border);padding:1rem .8rem;flex-shrink:0;}
+.mockup-si{display:flex;align-items:center;gap:.5rem;padding:.5rem .6rem;border-radius:6px;font-size:.75rem;color:var(--white-dim);margin-bottom:.3rem;}
+.mockup-si.act{background:var(--cyan-glow);color:var(--cyan);border:1px solid var(--border-bright);}
+.mockup-main{flex:1;padding:1.2rem;}
+.mockup-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-bottom:1rem;}
+.mockup-stat{background:var(--bg-card3);border:1px solid var(--border);border-radius:8px;padding:.7rem;}
+.ms-label{font-size:.6rem;color:var(--white-dim);font-family:var(--font-mono);margin-bottom:.3rem;}
+.ms-val{font-family:var(--font-head);font-size:1.1rem;font-weight:700;}
+.ms-val.c{color:var(--cyan);}
+.ms-val.g{color:var(--green);}
+.ms-val.r{color:var(--red);}
+.ms-val.y{color:var(--yellow);}
+.mockup-chart{background:var(--bg-card3);border:1px solid var(--border);border-radius:8px;padding:.8rem;height:90px;}
+
+/* ======================== SECTIONS ======================== */
+.section{padding:90px 2rem;max-width:1200px;margin:0 auto;}
+.section-label{
+  font-family:var(--font-mono);font-size:.72rem;
+  color:var(--cyan);letter-spacing:.12em;text-transform:uppercase;
+  text-align:center;margin-bottom:.8rem;
+}
+.section-title{font-family:var(--font-head);font-size:clamp(1.9rem,4vw,2.9rem);font-weight:700;text-align:center;letter-spacing:-.02em;margin-bottom:.8rem;}
+.section-sub{text-align:center;color:var(--white-dim);margin-bottom:4rem;font-size:1rem;max-width:560px;margin-left:auto;margin-right:auto;}
+
+/* FEATURES GRID */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.2rem;}
+.feat-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:2rem;
+  transition:all .3s;position:relative;overflow:hidden;
+  cursor:default;
+}
+.feat-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--cyan-glow2),transparent 60%);
+  opacity:0;transition:opacity .3s;
+}
+.feat-card:hover{border-color:var(--border-bright);transform:translateY(-5px);box-shadow:var(--shadow),0 0 30px rgba(0,212,255,.08);}
+.feat-card:hover::before{opacity:1;}
+.feat-card.featured{border-color:rgba(0,212,255,.3);background:linear-gradient(135deg,var(--bg-card),var(--bg-card2));}
+.feat-icon{
+  width:50px;height:50px;
+  background:var(--cyan-glow);border:1px solid var(--border-bright);
+  border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;margin-bottom:1.2rem;
+}
+.feat-title{font-family:var(--font-head);font-weight:600;font-size:1.05rem;margin-bottom:.6rem;}
+.feat-desc{font-size:.87rem;color:var(--white-dim);line-height:1.65;}
+
+/* ======================== PRICING ======================== */
+.pricing-section{padding:90px 2rem;background:linear-gradient(180deg,transparent,rgba(0,50,100,.04),transparent);}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;max-width:920px;margin:0 auto;}
+.price-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:20px;padding:2.2rem;
+  position:relative;transition:all .3s;
+}
+.price-card.popular{
+  border-color:var(--cyan);
+  background:linear-gradient(135deg,var(--bg-card),var(--bg-card2));
+  box-shadow:0 0 50px rgba(0,212,255,.12),var(--shadow);
+  transform:scale(1.03);
+}
+.price-badge{
+  position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--cyan),var(--cyan2));
+  color:var(--bg);font-size:.72rem;font-weight:700;
+  padding:.28rem 1rem;border-radius:50px;
+  font-family:var(--font-mono);letter-spacing:.05em;
+  white-space:nowrap;
+}
+.price-tier{font-family:var(--font-mono);font-size:.78rem;color:var(--white-dim);letter-spacing:.1em;margin-bottom:.8rem;}
+.price-val{font-family:var(--font-head);font-size:3rem;font-weight:700;letter-spacing:-.03em;line-height:1;}
+.price-val small{font-size:1rem;color:var(--white-dim);}
+.price-limit{
+  font-family:var(--font-mono);font-size:.8rem;
+  color:var(--cyan);margin:.6rem 0 1.8rem;
+  display:flex;align-items:center;gap:.4rem;
+}
+.price-features{list-style:none;margin-bottom:2rem;}
+.price-features li{
+  font-size:.87rem;color:var(--white-dim);
+  padding:.45rem 0;display:flex;align-items:center;gap:.7rem;
+  border-bottom:1px solid var(--white-faint);
+}
+.price-features li .chk{flex-shrink:0;width:18px;height:18px;background:var(--green-dim);border:1px solid rgba(0,255,176,.3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--green);}
+.price-features li.no .chk{background:var(--red-dim);border-color:rgba(255,59,92,.2);color:var(--red);}
+.price-features li.no{color:rgba(200,230,255,.3);}
+.btn-plan{width:100%;padding:1rem;border-radius:var(--radius-sm);font-weight:700;font-size:.95rem;cursor:pointer;font-family:var(--font-body);transition:all .2s;letter-spacing:.01em;}
+.btn-plan-free{background:transparent;border:1.5px solid var(--border-bright);color:var(--white);}
+.btn-plan-free:hover{background:var(--white-faint);border-color:var(--cyan);}
+.btn-plan-paid{background:linear-gradient(135deg,var(--cyan),var(--cyan2));border:none;color:var(--bg);}
+.btn-plan-paid:hover{box-shadow:0 0 28px rgba(0,212,255,.5);filter:brightness(1.1);}
+
+/* ======================== MODAL ======================== */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(4,12,26,.94);
+  backdrop-filter:blur(16px);
+  z-index:2000;
+  display:flex;align-items:center;justify-content:center;
+  padding:1rem;
+  animation:fadeIn .2s ease;
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.modal{
+  background:var(--bg-card);
+  border:1px solid var(--border-bright);
+  border-radius:24px;width:100%;max-width:520px;
+  max-height:92vh;overflow-y:auto;
+  padding:2.5rem;position:relative;
+  box-shadow:var(--shadow),var(--shadow-cyan);
+  animation:slideUp .3s ease;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.modal-close{
+  position:absolute;top:1.2rem;right:1.2rem;
+  background:var(--white-faint);border:1px solid var(--border);
+  color:var(--white-dim);width:32px;height:32px;
+  border-radius:50%;cursor:pointer;font-size:1rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.modal-close:hover{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+.modal-logo{display:flex;align-items:center;gap:.6rem;margin-bottom:1.5rem;}
+.modal h2{font-family:var(--font-head);font-size:1.7rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.4rem;}
+.modal .modal-sub{color:var(--white-dim);font-size:.9rem;margin-bottom:2rem;line-height:1.6;}
+
+/* FORM ELEMENTS */
+.form-group{margin-bottom:1.2rem;}
+.form-label{display:block;font-size:.78rem;font-weight:600;color:var(--white-dim);margin-bottom:.45rem;font-family:var(--font-mono);letter-spacing:.05em;text-transform:uppercase;}
+.form-input,.form-select,.form-textarea{
+  width:100%;padding:.78rem 1rem;
+  background:rgba(200,230,255,.04);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  color:var(--white);
+  font-family:var(--font-body);font-size:.9rem;
+  transition:all .2s;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--cyan);background:var(--cyan-glow2);box-shadow:0 0 0 3px rgba(0,212,255,.08);}
+.form-input::placeholder{color:rgba(200,230,255,.3);}
+.form-select{cursor:pointer;}
+.form-select option{background:var(--bg-card2);color:var(--white);}
+.form-textarea{min-height:90px;resize:vertical;line-height:1.6;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-error{font-size:.78rem;color:var(--red);margin-top:.3rem;}
+.full-width{grid-column:1/-1;}
+
+.step-track{display:flex;gap:.4rem;margin-bottom:2rem;}
+.step-seg{height:3px;flex:1;background:var(--white-faint);border-radius:2px;transition:background .4s;}
+.step-seg.done{background:var(--cyan);}
+
+.radio-group{display:flex;flex-wrap:wrap;gap:.5rem;}
+.radio-pill{
+  padding:.4rem 1rem;border:1px solid var(--border);
+  border-radius:50px;cursor:pointer;
+  font-size:.82rem;color:var(--white-dim);
+  transition:all .2s;user-select:none;
+}
+.radio-pill.sel,.radio-pill:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-glow);}
+
+.divider-text{display:flex;align-items:center;gap:1rem;margin:1.5rem 0;color:var(--white-dim);font-size:.8rem;}
+.divider-text::before,.divider-text::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.alert{padding:.85rem 1rem;border-radius:var(--radius-sm);font-size:.85rem;line-height:1.5;}
+.alert-ok{background:var(--green-dim);border:1px solid rgba(0,255,176,.25);color:var(--green);}
+.alert-err{background:var(--red-dim);border:1px solid rgba(255,59,92,.25);color:var(--red);}
+
+/* ======================== DASHBOARD ======================== */
+.dashboard-layout{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{
+  width:250px;background:var(--bg-card);border-right:1px solid var(--border);
+  padding:80px 0 1.5rem;
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:200;
+  transition:transform .3s;
+}
+.sidebar-sect{padding:1.5rem 1.2rem .5rem;font-family:var(--font-mono);font-size:.65rem;color:var(--white-dim);letter-spacing:.1em;text-transform:uppercase;}
+.sidebar-item{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.72rem 1.2rem;cursor:pointer;
+  transition:all .2s;color:var(--white-dim);
+  font-size:.88rem;font-weight:500;position:relative;
+  border-radius:0;margin:0 .6rem;border-radius:var(--radius-sm);
+}
+.sidebar-item:hover,.sidebar-item.act{color:var(--white);background:var(--cyan-glow);}
+.sidebar-item.act{border:1px solid var(--border-bright);}
+.sidebar-item .s-icon{font-size:1rem;width:22px;text-align:center;}
+.sidebar-badge{margin-left:auto;font-size:.65rem;background:var(--cyan);color:var(--bg);padding:.15rem .5rem;border-radius:50px;font-family:var(--font-mono);}
+.sidebar-footer{padding:1rem 1.2rem;border-top:1px solid var(--border);}
+.plan-chip{
+  background:var(--cyan-glow2);border:1px solid var(--border-bright);
+  border-radius:var(--radius-sm);padding:.9rem 1rem;
+}
+.plan-chip-name{font-family:var(--font-mono);font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.05em;}
+.plan-chip-usage{font-size:.78rem;color:var(--white-dim);margin-top:.25rem;}
+.usage-bar{height:4px;background:var(--white-faint);border-radius:2px;margin-top:.6rem;overflow:hidden;}
+.usage-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--cyan2));border-radius:2px;transition:width .4s;}
+
+/* MAIN CONTENT */
+.main{margin-left:250px;padding:80px 2rem 3rem;flex:1;min-height:100vh;}
+.page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
+.page-title{font-family:var(--font-head);font-size:1.7rem;font-weight:700;letter-spacing:-.02em;}
+.page-sub{color:var(--white-dim);font-size:.88rem;margin-top:.3rem;}
+
+/* STAT CARDS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;margin-bottom:2rem;}
+.sc{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.5rem;
+  position:relative;overflow:hidden;transition:all .25s;
+}
+.sc:hover{border-color:var(--border-bright);}
+.sc::after{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:var(--cyan-glow2);border-radius:50%;}
+.sc-label{font-family:var(--font-mono);font-size:.68rem;color:var(--white-dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem;}
+.sc-val{font-family:var(--font-head);font-size:2rem;font-weight:700;line-height:1;}
+.sc-val.c{color:var(--cyan);}
+.sc-val.g{color:var(--green);}
+.sc-val.r{color:var(--red);}
+.sc-val.y{color:var(--yellow);}
+.sc-delta{font-size:.75rem;color:var(--white-dim);margin-top:.5rem;}
+
+/* RULES BANNER */
+.rules-banner{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.5rem;margin-bottom:2rem;
+}
+.rb-title{font-family:var(--font-head);font-weight:600;margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem;font-size:1rem;}
+.rb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:.6rem;}
+.rb-item{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.5rem .8rem;border-radius:8px;
+  font-size:.8rem;font-weight:600;
+}
+.rb-ok{background:var(--green-dim);border:1px solid rgba(0,255,176,.2);color:var(--green);}
+.rb-fail{background:var(--red-dim);border:1px solid rgba(255,59,92,.2);color:var(--red);}
+.rb-warn{background:var(--yellow-dim);border:1px solid rgba(255,214,0,.2);color:var(--yellow);}
+
+/* CHARTS */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:1.2rem;margin-bottom:2rem;}
+.chart-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;}
+.chart-box-title{font-family:var(--font-head);font-weight:600;margin-bottom:1.2rem;font-size:.95rem;}
+.mini-chart{height:130px;}
+.donut-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;}
+.donut-legend{display:flex;flex-direction:column;gap:.4rem;width:100%;}
+.legend-row{display:flex;align-items:center;gap:.5rem;font-size:.8rem;}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* TABLE */
+.table-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.table-head{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);}
+.table-title{font-family:var(--font-head);font-weight:600;}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl thead th{
+  padding:.8rem 1rem;text-align:left;
+  font-family:var(--font-mono);font-size:.68rem;
+  color:var(--white-dim);letter-spacing:.08em;text-transform:uppercase;
+  border-bottom:1px solid var(--border);
+  background:rgba(200,230,255,.02);
+}
+.tbl tbody tr{transition:background .15s;}
+.tbl tbody tr:hover{background:var(--cyan-glow3);}
+.tbl tbody td{padding:.82rem 1rem;font-size:.85rem;border-bottom:1px solid rgba(200,230,255,.04);}
+.mono{font-family:var(--font-mono);font-size:.8rem;}
+.cell-pair{font-weight:700;color:var(--cyan);}
+
+/* BADGES */
+.badge{padding:.2rem .6rem;border-radius:4px;font-size:.72rem;font-family:var(--font-mono);font-weight:700;letter-spacing:.03em;}
+.b-long{background:var(--green-dim);color:var(--green);}
+.b-short{background:var(--red-dim);color:var(--red);}
+.b-win{background:var(--green-dim);color:var(--green);}
+.b-loss{background:var(--red-dim);color:var(--red);}
+.b-be{background:var(--yellow-dim);color:var(--yellow);}
+.b-conf{background:var(--cyan-glow);color:var(--cyan);}
+.b-fomo{background:rgba(255,107,53,.12);color:var(--orange);}
+.b-revenge{background:rgba(139,92,246,.12);color:var(--purple);}
+.b-neutral{background:var(--white-faint);color:var(--white-dim);}
+
+/* SESSION PILLS */
+.session-pills{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.session-pill{
+  padding:.4rem 1rem;border:1px solid var(--border);
+  border-radius:50px;font-size:.78rem;font-family:var(--font-mono);
+  cursor:pointer;transition:all .2s;color:var(--white-dim);letter-spacing:.04em;
+}
+.session-pill:hover,.session-pill.act{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-glow);}
+
+/* NEW TRADE FORM */
+.trade-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.grid-divider{
+  grid-column:1/-1;border-top:1px solid var(--border);
+  padding-top:.8rem;margin-top:.4rem;
+  font-family:var(--font-mono);font-size:.7rem;
+  color:var(--cyan);letter-spacing:.1em;text-transform:uppercase;
+}
+.psy-cloud{display:flex;flex-wrap:wrap;gap:.5rem;grid-column:1/-1;}
+.psy-chip{
+  padding:.38rem .9rem;border:1px solid var(--border);
+  border-radius:50px;font-size:.8rem;cursor:pointer;
+  transition:all .2s;color:var(--white-dim);user-select:none;
+}
+.psy-chip.sel{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-glow);}
+.psy-chip.dng.sel{border-color:var(--red);color:var(--red);background:var(--red-dim);}
+.psy-chip.wrn.sel{border-color:var(--yellow);color:var(--yellow);background:var(--yellow-dim);}
+.psy-chip.prp.sel{border-color:var(--purple);color:var(--purple);background:rgba(139,92,246,.1);}
+
+.upload-area{
+  grid-column:1/-1;border:2px dashed var(--border);
+  border-radius:var(--radius);padding:2.2rem;
+  text-align:center;cursor:pointer;transition:all .25s;color:var(--white-dim);
+}
+.upload-area:hover{border-color:var(--cyan);background:var(--cyan-glow2);}
+.upload-icon{font-size:2.2rem;margin-bottom:.5rem;}
+.upload-text{font-size:.88rem;font-weight:500;}
+.upload-hint{font-size:.75rem;opacity:.55;margin-top:.3rem;}
+.upgrade-note{
+  grid-column:1/-1;font-size:.82rem;text-align:center;
+  padding:.65rem;background:var(--white-faint);
+  border-radius:var(--radius-sm);color:var(--white-dim);
+}
+.upgrade-note a{color:var(--cyan);cursor:pointer;text-decoration:underline;}
+
+/* RULES EDITOR */
+.rules-editor{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;}
+.rule-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;background:var(--bg-card2);border-radius:8px;margin-bottom:.5rem;font-size:.87rem;}
+.rule-del{background:none;border:none;color:rgba(255,59,92,.6);cursor:pointer;font-size:.9rem;transition:color .2s;padding:.2rem .4rem;}
+.rule-del:hover{color:var(--red);}
+.add-rule-row{display:flex;gap:.7rem;margin-top:1rem;}
+.add-rule-row .form-input{flex:1;}
+
+/* KYC */
+.kyc-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:1.5rem;}
+.kyc-card-title{font-family:var(--font-head);font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;gap:.5rem;}
+.kyc-q{margin-bottom:1.6rem;}
+.kyc-q-label{font-size:.9rem;font-weight:500;margin-bottom:.8rem;color:var(--white);}
+
+/* CONTACT */
+.contact-wrap{display:grid;grid-template-columns:1fr 1.5fr;gap:2rem;max-width:960px;margin:0 auto;}
+.contact-info-list{display:flex;flex-direction:column;gap:1.5rem;}
+.ci-item{display:flex;gap:1rem;align-items:flex-start;}
+.ci-icon{width:46px;height:46px;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.ci-text h4{font-weight:600;margin-bottom:.25rem;}
+.ci-text p{font-size:.85rem;color:var(--white-dim);}
+.contact-form-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;}
+
+/* PROFILE UPGRADE */
+.upgrade-cards{display:flex;gap:1rem;flex-wrap:wrap;}
+.upgrade-card{flex:1;min-width:200px;padding:1rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;text-align:center;}
+.upgrade-card:hover,.upgrade-card.act{border-color:var(--cyan);background:var(--cyan-glow);}
+.uc-plan{font-family:var(--font-mono);font-size:.75rem;color:var(--cyan);margin-bottom:.3rem;}
+.uc-price{font-family:var(--font-head);font-size:1.4rem;font-weight:700;}
+.uc-limit{font-size:.78rem;color:var(--white-dim);margin-top:.2rem;}
+
+/* UPGRADE MODAL */
+.upgrade-options{display:flex;flex-direction:column;gap:.8rem;}
+.uopt{padding:1.1rem 1.2rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;display:flex;justify-content:space-between;align-items:center;}
+.uopt:hover{border-color:var(--cyan);background:var(--cyan-glow2);}
+.uopt-name{font-weight:700;}
+.uopt-desc{font-size:.8rem;color:var(--white-dim);margin-top:.2rem;}
+.uopt-price{font-family:var(--font-head);font-size:1.3rem;font-weight:700;color:var(--cyan);}
+
+/* FOOTER */
+footer{
+  background:var(--bg-card);border-top:1px solid var(--border);
+  padding:3.5rem 2rem 2rem;
+}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:2.5rem;}
+.footer-brand .logo-text{font-family:var(--font-head);font-size:1.4rem;font-weight:700;margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem;}
+.footer-brand p{font-size:.85rem;color:var(--white-dim);line-height:1.7;}
+.footer-col h4{font-weight:600;font-size:.9rem;margin-bottom:1rem;color:var(--white);}
+.footer-col a{display:block;font-size:.85rem;color:var(--white-dim);text-decoration:none;margin-bottom:.6rem;cursor:pointer;transition:color .2s;}
+.footer-col a:hover{color:var(--cyan);}
+.footer-bottom{border-top:1px solid var(--border);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:gap;color:var(--white-dim);font-size:.8rem;}
+
+/* ======================== ANIMATIONS ======================== */
+@keyframes fadeSlide{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+@keyframes spin{to{transform:rotate(360deg);}}
+.fade-in{animation:fadeSlide .5s ease both;}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .footer-inner{grid-template-columns:1fr 1fr;}
+  .charts-row{grid-template-columns:1fr;}
+  .contact-wrap{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-260px);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .nav-center{display:none;}
+  .trade-grid,.form-row,.pricing-grid{grid-template-columns:1fr;}
+  .price-card.popular{transform:none;}
+  .hero h1{font-size:2.4rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== LANDING PAGE ===================== -->
+<div id="page-landing" class="page active">
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" onclick="showPage('page-landing')">
+    <svg class="logo-svg" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="34" height="34" rx="9" fill="#040C1A"/>
+      <rect width="34" height="34" rx="9" fill="url(#logo-grad)" opacity=".12"/>
+      <path d="M7 25 L13 15 L19 19.5 L28 8" stroke="#00D4FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="28" cy="8" r="2.8" fill="#00D4FF"/>
+      <circle cx="28" cy="8" r="2.8" fill="#00D4FF" opacity=".4" style="animation:pulse 2s infinite;"/>
+      <defs>
+        <linearGradient id="logo-grad" x1="0" y1="0" x2="34" y2="34">
+          <stop offset="0%" stop-color="#00D4FF"/>
+          <stop offset="100%" stop-color="#8B5CF6"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <span class="logo-text">Journify<span>X</span></span>
+  </a>
+  <div class="nav-center">
+    <a onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Features</a>
+    <a onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Pricing</a>
+    <a onclick="document.getElementById('sessions-section').scrollIntoView({behavior:'smooth'})">Sessions</a>
+    <a onclick="document.getElementById('contact-section').scrollIntoView({behavior:'smooth'})">Contact</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn btn-ghost" onclick="openModal('modal-login')">Log In</button>
+    <button class="btn btn-solid" onclick="openModal('modal-register')">Get Started Free</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-orb1"></div>
+  <div class="hero-orb2"></div>
+  <div class="hero-orb3"></div>
+  <div style="position:relative;z-index:1;">
+    <div class="hero-eyebrow">
+      <div class="dot"></div>
+      PROFESSIONAL TRADING JOURNAL
+    </div>
+    <h1>Track every trade.<br>Master your <span class="grad-text">discipline.</span></h1>
+    <p class="hero-desc">JournifyX is the most complete SaaS trading journal for Forex, Crypto & CFD traders. Log sessions, manage your psychology, enforce your rules — and finally see what's holding you back.</p>
+    <div class="hero-actions">
+      <button class="btn btn-solid btn-xl" onclick="openModal('modal-register')">Start for Free</button>
+      <button class="btn btn-outline-lg btn-lg" onclick="demoLogin()">View Demo Dashboard</button>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-item"><div class="trust-num">10K+</div><div class="trust-label">Active Traders</div></div>
+      <div class="trust-item"><div class="trust-num">2M+</div><div class="trust-label">Trades Logged</div></div>
+      <div class="trust-item"><div class="trust-num">98%</div><div class="trust-label">Satisfaction</div></div>
+      <div class="trust-item"><div class="trust-num">6</div><div class="trust-label">ICT Sessions</div></div>
+    </div>
+  </div>
+
+  <!-- MOCKUP -->
+  <div class="hero-mockup">
+    <div class="mockup-bar">
+      <div class="mockup-dot" style="background:#ff5f56"></div>
+      <div class="mockup-dot" style="background:#febc2e"></div>
+      <div class="mockup-dot" style="background:#27c840"></div>
+      <span style="margin-left:auto;font-family:var(--font-mono);font-size:.7rem;color:var(--white-dim);">journifyx.com/dashboard</span>
+    </div>
+    <div class="mockup-content">
+      <div class="mockup-sidebar">
+        <div class="mockup-si act">📊 Dashboard</div>
+        <div class="mockup-si">📋 Trades</div>
+        <div class="mockup-si">➕ New Trade</div>
+        <div class="mockup-si">📈 Analytics</div>
+        <div class="mockup-si">📐 Rules</div>
+        <div class="mockup-si">👤 Profile</div>
+      </div>
+      <div class="mockup-main">
+        <div class="mockup-stats">
+          <div class="mockup-stat"><div class="ms-label">TRADES</div><div class="ms-val c">47</div></div>
+          <div class="mockup-stat"><div class="ms-label">WIN RATE</div><div class="ms-val g">72%</div></div>
+          <div class="mockup-stat"><div class="ms-label">NET P&L</div><div class="ms-val g">+18.4R</div></div>
+          <div class="mockup-stat"><div class="ms-label">RULES</div><div class="ms-val y">89%</div></div>
+        </div>
+        <div class="mockup-chart">
+          <svg width="100%" height="70" viewBox="0 0 500 70" preserveAspectRatio="none">
+            <defs><linearGradient id="eg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00D4FF" stop-opacity=".35"/><stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/></linearGradient></defs>
+            <path d="M0,60 L40,55 L80,48 L120,52 L160,38 L200,30 L240,35 L280,20 L320,25 L360,12 L400,16 L440,8 L500,5" fill="none" stroke="#00D4FF" stroke-width="2"/>
+            <path d="M0,60 L40,55 L80,48 L120,52 L160,38 L200,30 L240,35 L280,20 L320,25 L360,12 L400,16 L440,8 L500,5 L500,70 L0,70Z" fill="url(#eg2)"/>
+          </svg>
+          <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--white-dim);margin-top:.3rem;">Equity Curve — Last 30 days</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section" id="features">
+  <div class="section-label">What's inside</div>
+  <div class="section-title">Everything a serious trader needs</div>
+  <div class="section-sub">Built for ICT/SMC traders who want to level up through data and discipline</div>
+  <div class="features-grid">
+    <div class="feat-card featured">
+      <div class="feat-icon">📋</div>
+      <div class="feat-title">Complete Trade Journal</div>
+      <div class="feat-desc">Log entry price, TP, SL, R:R, pips, session, pair, direction, capital risked and more — all in one clean form.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🧠</div>
+      <div class="feat-title">Psychology Tracking</div>
+      <div class="feat-desc">Tag every trade: Confident, FOMO, Revenge Trade, Fear, Overconfident, Impatient, In the Zone — know your mental patterns.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">⏰</div>
+      <div class="feat-title">ICT Sessions</div>
+      <div class="feat-desc">NY AM, NY PM, CBDR, London/Asia, London Open, London Close, NY Launch — filter and analyze by session.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📐</div>
+      <div class="feat-title">Risk Management</div>
+      <div class="feat-desc">Set your initial capital, define max risk %, minimum R:R. The dashboard shows if you respected your own rules.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🖼️</div>
+      <div class="feat-title">Trade Screenshots</div>
+      <div class="feat-desc">Attach chart screenshots to each trade entry. Visual review accelerates improvement. Available on paid plans.</div>
+    </div>
+    <div class="feat-card featured">
+      <div class="feat-icon">📈</div>
+      <div class="feat-title">Analytics Dashboard</div>
+      <div class="feat-desc">Win rate, P&L, equity curve, performance by session, pair, and psychological state — all visualized clearly.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">⚙️</div>
+      <div class="feat-title">Custom Trading Rules</div>
+      <div class="feat-desc">Write your own trading rules. JournifyX checks every trade against them and tells you if you broke any.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🔒</div>
+      <div class="feat-title">KYC Trader Profile</div>
+      <div class="feat-desc">Experience level, broker, account type (personal/funded), market (Forex/Crypto/CFDs/Futures) — personalized experience.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SESSIONS HIGHLIGHT -->
+<div id="sessions-section" style="padding:60px 2rem;background:linear-gradient(180deg,transparent,rgba(0,50,100,.04),transparent);">
+  <div style="max-width:900px;margin:0 auto;text-align:center;">
+    <div class="section-label">ICT / SMC Compatible</div>
+    <div class="section-title">All major trading sessions</div>
+    <div style="display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center;margin-top:2rem;">
+      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🇺🇸 New York AM</div>
+      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🌆 New York PM</div>
+      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">📏 CBDR</div>
+      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🌍 London / Asia</div>
+      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🔔 London Open</div>
+      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🔕 London Close</div>
+      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🚀 NY Launch</div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div id="pricing" class="pricing-section">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-label">Pricing</div>
+    <div class="section-title">Start free. Upgrade when ready.</div>
+    <div class="section-sub" style="margin-bottom:3rem;">No credit card required to start. Cancel anytime.</div>
+    <div class="pricing-grid">
+
+      <div class="price-card">
+        <div class="price-tier">FREE</div>
+        <div class="price-val">$0 <small>/month</small></div>
+        <div class="price-limit">📊 10 trades / month</div>
+        <ul class="price-features">
+          <li><div class="chk">✓</div>Basic trade journal</li>
+          <li><div class="chk">✓</div>All sessions & pairs</li>
+          <li><div class="chk">✓</div>Psychology tags</li>
+          <li><div class="chk">✓</div>Custom rules</li>
+          <li class="no"><div class="chk">✗</div>Screenshots</li>
+          <li class="no"><div class="chk">✗</div>Advanced analytics</li>
+          <li class="no"><div class="chk">✗</div>CSV / PDF export</li>
+          <li class="no"><div class="chk">✗</div>Priority support</li>
+        </ul>
+        <button class="btn-plan btn-plan-free" onclick="openModal('modal-register')">Start Free</button>
+      </div>
+
+      <div class="price-card popular">
+        <div class="price-badge">MOST POPULAR</div>
+        <div class="price-tier">STARTER</div>
+        <div class="price-val">$5 <small>/month</small></div>
+        <div class="price-limit">📊 30 trades / month</div>
+        <ul class="price-features">
+          <li><div class="chk">✓</div>Full trade journal</li>
+          <li><div class="chk">✓</div>All sessions & pairs</li>
+          <li><div class="chk">✓</div>Psychology tags</li>
+          <li><div class="chk">✓</div>Custom rules</li>
+          <li><div class="chk">✓</div>Screenshots ✓</li>
+          <li><div class="chk">✓</div>Standard analytics</li>
+          <li class="no"><div class="chk">✗</div>CSV / PDF export</li>
+          <li class="no"><div class="chk">✗</div>Priority support</li>
+        </ul>
+        <button class="btn-plan btn-plan-paid" onclick="openModal('modal-register')">Get Starter</button>
+      </div>
+
+      <div class="price-card">
+        <div class="price-tier">PRO</div>
+        <div class="price-val">$15 <small>/month</small></div>
+        <div class="price-limit">♾️ Unlimited trades</div>
+        <ul class="price-features">
+          <li><div class="chk">✓</div>Full trade journal</li>
+          <li><div class="chk">✓</div>All sessions & pairs</li>
+          <li><div class="chk">✓</div>Psychology tags</li>
+          <li><div class="chk">✓</div>Custom rules</li>
+          <li><div class="chk">✓</div>Unlimited screenshots</li>
+          <li><div class="chk">✓</div>Advanced analytics</li>
+          <li><div class="chk">✓</div>CSV / PDF export</li>
+          <li><div class="chk">✓</div>Priority support 24/7</li>
+        </ul>
+        <button class="btn-plan btn-plan-paid" onclick="openModal('modal-register')">Get Pro</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact-section" class="section">
+  <div class="section-label">Support</div>
+  <div class="section-title">Get in touch</div>
+  <div class="section-sub" style="margin-bottom:3rem;">We're here to help you succeed in your trading journey</div>
+  <div class="contact-wrap">
+    <div class="contact-info-list">
+      <div class="ci-item">
+        <div class="ci-icon">📧</div>
+        <div class="ci-text"><h4>Email Support</h4><p>support@journifyx.com<br>Response within 24 hours</p></div>
+      </div>
+      <div class="ci-item">
+        <div class="ci-icon">💬</div>
+        <div class="ci-text"><h4>Discord Community</h4><p>discord.gg/journifyx<br>Active community of traders</p></div>
+      </div>
+      <div class="ci-item">
+        <div class="ci-icon">📱</div>
+        <div class="ci-text"><h4>Telegram</h4><p>@JournifyXSupport<br>Available 7 days/week</p></div>
+      </div>
+      <div class="ci-item">
+        <div class="ci-icon">⚡</div>
+        <div class="ci-text"><h4>Priority Support</h4><p>Available on PRO plan<br>Response under 1 hour</p></div>
+      </div>
+    </div>
+    <div class="contact-form-card">
+      <h3 style="font-family:var(--font-head);font-weight:600;margin-bottom:1.5rem;">Send us a message</h3>
+      <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" placeholder="Your name..."></div>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="email@example.com"></div>
+      <div class="form-group"><label class="form-label">Subject</label>
+        <select class="form-select">
+          <option>Technical Issue</option>
+          <option>Billing Question</option>
+          <option>Feature Request</option>
+          <option>Partnership</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" placeholder="Describe your issue or question..."></textarea></div>
+      <button class="btn btn-solid btn-full" onclick="showTempAlert('contact-ok-landing')">Send Message</button>
+      <div id="contact-ok-landing" class="alert alert-ok" style="display:none;margin-top:1rem;">✅ Message sent! We'll reply within 24 hours.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo-text">
+        <svg width="28" height="28" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#071426"/><path d="M7 25 L13 15 L19 19.5 L28 8" stroke="#00D4FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="28" cy="8" r="2.8" fill="#00D4FF"/></svg>
+        Journify<span style="color:var(--cyan)">X</span>
+      </div>
+      <p>The professional trading journal for serious traders. Track, analyze, and improve your performance with data-driven insights.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Features</a>
+      <a onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Pricing</a>
+      <a>Changelog</a>
+      <a>Roadmap</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a>Documentation</a>
+      <a>Blog</a>
+      <a>Discord</a>
+      <a>Tutorials</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a>Privacy Policy</a>
+      <a>Terms of Use</a>
+      <a>Cookie Policy</a>
+      <a onclick="document.getElementById('contact-section').scrollIntoView({behavior:'smooth'})">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 JournifyX. All rights reserved.</span>
+    <span>Built for traders, by traders. 🎯</span>
+  </div>
+</footer>
+</div><!-- /landing -->
+
+<!-- ===================== DASHBOARD PAGE ===================== -->
+<div id="page-dashboard" class="page">
+
+<nav>
+  <a class="nav-logo" onclick="showPage('page-landing')">
+    <svg width="30" height="30" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#040C1A"/><path d="M7 25 L13 15 L19 19.5 L28 8" stroke="#00D4FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="28" cy="8" r="2.8" fill="#00D4FF"/></svg>
+    <span class="logo-text">Journify<span>X</span></span>
+  </a>
+  <div class="nav-right">
+    <span id="nav-greeting" style="font-size:.85rem;color:var(--white-dim);"></span>
+    <button class="btn btn-ghost" onclick="logout()" style="font-size:.82rem;padding:.4rem .9rem;">Log Out</button>
+  </div>
+</nav>
+
+<div class="dashboard-layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-sect">Main</div>
+    <div class="sidebar-item act" id="nav-overview" onclick="showDash('dash-overview')">
+      <span class="s-icon">📊</span> Dashboard
+    </div>
+    <div class="sidebar-item" id="nav-trades" onclick="showDash('dash-trades')">
+      <span class="s-icon">📋</span> My Trades
+    </div>
+    <div class="sidebar-item" id="nav-new" onclick="showDash('dash-new')">
+      <span class="s-icon">➕</span> New Trade
+    </div>
+    <div class="sidebar-sect">Analysis</div>
+    <div class="sidebar-item" id="nav-analytics" onclick="showDash('dash-analytics')">
+      <span class="s-icon">📈</span> Analytics
+    </div>
+    <div class="sidebar-item" id="nav-rules" onclick="showDash('dash-rules')">
+      <span class="s-icon">📐</span> My Rules
+    </div>
+    <div class="sidebar-sect">Account</div>
+    <div class="sidebar-item" id="nav-profile" onclick="showDash('dash-profile')">
+      <span class="s-icon">👤</span> Profile / KYC
+    </div>
+    <div class="sidebar-item" id="nav-support" onclick="showDash('dash-support')">
+      <span class="s-icon">💬</span> Support
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="plan-chip">
+        <div class="plan-chip-name" id="sb-plan-name">FREE PLAN</div>
+        <div class="plan-chip-usage" id="sb-plan-usage">3 / 10 trades</div>
+        <div class="usage-bar"><div class="usage-fill" id="sb-fill" style="width:30%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- OVERVIEW -->
+    <div id="dash-overview" class="dash-section">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Dashboard</div>
+          <div class="page-sub">Your performance at a glance</div>
+        </div>
+        <button class="btn btn-solid" onclick="showDash('dash-new')">+ New Trade</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="sc"><div class="sc-label">TOTAL TRADES</div><div class="sc-val c" id="ov-total">3</div><div class="sc-delta">This month</div></div>
+        <div class="sc"><div class="sc-label">WIN RATE</div><div class="sc-val g" id="ov-wr">66.7%</div><div class="sc-delta">2 wins / 1 loss</div></div>
+        <div class="sc"><div class="sc-label">NET P&L</div><div class="sc-val g" id="ov-pnl">+1.8R</div><div class="sc-delta">In risk units</div></div>
+        <div class="sc"><div class="sc-label">RULES RESPECT</div><div class="sc-val y" id="ov-rules">67%</div><div class="sc-delta">2/3 trades compliant</div></div>
+      </div>
+
+      <div class="rules-banner">
+        <div class="rb-title">🔍 Rules check — last trades</div>
+        <div class="rb-grid" id="rules-check-grid">
+          <div class="rb-item rb-ok">✅ SL Respected</div>
+          <div class="rb-item rb-ok">✅ Setup Present</div>
+          <div class="rb-item rb-fail">❌ Revenge Trade x1</div>
+          <div class="rb-item rb-warn">⚠️ FOMO x1</div>
+          <div class="rb-item rb-ok">✅ Risk ≤ 1%</div>
+          <div class="rb-item rb-ok">✅ Valid Session</div>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart-box">
+          <div class="chart-box-title">📈 Equity Curve</div>
+          <div class="mini-chart">
+            <svg width="100%" height="100%" viewBox="0 0 400 130" preserveAspectRatio="none">
+              <defs><linearGradient id="eg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00D4FF" stop-opacity=".3"/><stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0,110 L50,95 L100,85 L150,100 L200,65 L250,55 L300,35 L350,40 L400,18" fill="none" stroke="#00D4FF" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M0,110 L50,95 L100,85 L150,100 L200,65 L250,55 L300,35 L350,40 L400,18 L400,130 L0,130Z" fill="url(#eg3)"/>
+              <circle cx="400" cy="18" r="5" fill="#00D4FF"/>
+              <circle cx="400" cy="18" r="9" fill="#00D4FF" opacity=".2" style="animation:pulse 2s infinite;"/>
+            </svg>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-title">🍩 Win / Loss</div>
+          <div class="donut-wrap">
+            <svg width="110" height="110" viewBox="0 0 110 110">
+              <circle cx="55" cy="55" r="42" fill="none" stroke="#071426" stroke-width="20"/>
+              <circle cx="55" cy="55" r="42" fill="none" stroke="#00FFB0" stroke-width="20" stroke-dasharray="176 88" stroke-dashoffset="-65" transform="rotate(-90 55 55)"/>
+              <circle cx="55" cy="55" r="42" fill="none" stroke="#FF3B5C" stroke-width="20" stroke-dasharray="88 176" stroke-dashoffset="-241" transform="rotate(-90 55 55)"/>
+              <text x="55" y="59" text-anchor="middle" fill="white" font-size="14" font-weight="700" font-family="Clash Display">67%</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="legend-row"><div class="legend-dot" style="background:var(--green)"></div><span style="font-size:.8rem">Wins (2)</span></div>
+              <div class="legend-row"><div class="legend-dot" style="background:var(--red)"></div><span style="font-size:.8rem">Losses (1)</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-head">
+          <div class="table-title">Recent Trades</div>
+          <button class="btn btn-ghost" style="font-size:.8rem;padding:.4rem .9rem;" onclick="showDash('dash-trades')">View All →</button>
+        </div>
+        <table class="tbl"><thead><tr>
+          <th>DATE</th><th>PAIR</th><th>SESSION</th><th>DIR</th><th>ENTRY</th><th>SL</th><th>TP</th><th>R:R</th><th>PIPS</th><th>PSY</th><th>RESULT</th>
+        </tr></thead><tbody id="tbody-overview"></tbody></table>
+      </div>
+    </div>
+
+    <!-- ALL TRADES -->
+    <div id="dash-trades" class="dash-section" style="display:none;">
+      <div class="page-header">
+        <div><div class="page-title">My Trades</div><div class="page-sub">Complete journal history</div></div>
+        <button class="btn btn-solid" onclick="showDash('dash-new')">+ New Trade</button>
+      </div>
+      <div class="session-pills">
+        <div class="session-pill act" onclick="filterSess('all',this)">All</div>
+        <div class="session-pill" onclick="filterSess('NY AM',this)">NY AM</div>
+        <div class="session-pill" onclick="filterSess('NY PM',this)">NY PM</div>
+        <div class="session-pill" onclick="filterSess('CBDR',this)">CBDR</div>
+        <div class="session-pill" onclick="filterSess('London/Asia',this)">London/Asia</div>
+        <div class="session-pill" onclick="filterSess('London Open',this)">London Open</div>
+        <div class="session-pill" onclick="filterSess('London Close',this)">London Close</div>
+        <div class="session-pill" onclick="filterSess('NY Launch',this)">NY Launch</div>
+      </div>
+      <div class="table-wrap">
+        <table class="tbl"><thead><tr>
+          <th>DATE</th><th>PAIR</th><th>SESSION</th><th>DIR</th><th>ENTRY</th><th>SL</th><th>TP</th><th>R:R</th><th>SL PIPS</th><th>TP PIPS</th><th>PSY</th><th>SETUP</th><th>RESULT</th>
+        </tr></thead><tbody id="tbody-all"></tbody></table>
+      </div>
+    </div>
+
+    <!-- NEW TRADE -->
+    <div id="dash-new" class="dash-section" style="display:none;">
+      <div class="page-header">
+        <div><div class="page-title">New Trade</div><div class="page-sub">Log your trade with full detail</div></div>
+      </div>
+      <div id="limit-alert" class="alert alert-err" style="display:none;margin-bottom:1rem;">⚠️ Trade limit reached. <a onclick="openModal('modal-upgrade')" style="color:var(--red);cursor:pointer;text-decoration:underline;">Upgrade your plan</a> to continue logging.</div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;">
+        <div class="trade-grid">
+
+          <div class="grid-divider">📅 Trade Info</div>
+          <div class="form-group"><label class="form-label">Date *</label><input type="date" class="form-input" id="t-date"></div>
+          <div class="form-group"><label class="form-label">Entry Time *</label><input type="time" class="form-input" id="t-time"></div>
+          <div class="form-group">
+            <label class="form-label">Session *</label>
+            <select class="form-select" id="t-session">
+              <option value="">-- Select --</option>
+              <option>NY AM</option><option>NY PM</option><option>CBDR</option>
+              <option>London/Asia</option><option>London Open</option><option>London Close</option><option>NY Launch</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Pair *</label>
+            <select class="form-select" id="t-pair">
+              <option value="">-- Select --</option>
+              <optgroup label="Forex Majors"><option>EURUSD</option><option>GBPUSD</option><option>USDJPY</option><option>USDCHF</option><option>AUDUSD</option><option>NZDUSD</option><option>USDCAD</option></optgroup>
+              <optgroup label="Forex Minors"><option>EURGBP</option><option>EURJPY</option><option>GBPJPY</option><option>EURAUD</option><option>EURNZD</option><option>GBPAUD</option><option>GBPCAD</option><option>AUDCAD</option><option>AUDJPY</option><option>NZDJPY</option></optgroup>
+              <optgroup label="Exotics"><option>USDTRY</option><option>USDZAR</option><option>USDMXN</option><option>USDSEK</option></optgroup>
+              <optgroup label="Crypto"><option>BTCUSD</option><option>ETHUSD</option><option>BNBUSD</option><option>SOLUSD</option><option>XRPUSD</option><option>ADAUSD</option></optgroup>
+              <optgroup label="Indices / CFDs"><option>US30</option><option>NAS100</option><option>SP500</option><option>GER40</option><option>UK100</option><option>GOLD (XAU/USD)</option><option>SILVER</option><option>OIL (WTI)</option></optgroup>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Direction *</label>
+            <select class="form-select" id="t-dir"><option>LONG (Buy)</option><option>SHORT (Sell)</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Result</label>
+            <select class="form-select" id="t-result"><option value="WIN">WIN ✅</option><option value="LOSS">LOSS ❌</option><option value="BE">BREAKEVEN ➡️</option></select>
+          </div>
+
+          <div class="grid-divider">💰 Price Levels</div>
+          <div class="form-group"><label class="form-label">Entry Price *</label><input type="number" step="any" class="form-input" id="t-entry" placeholder="1.08500"></div>
+          <div class="form-group"><label class="form-label">Stop Loss (SL) *</label><input type="number" step="any" class="form-input" id="t-sl" placeholder="1.08200"></div>
+          <div class="form-group"><label class="form-label">Take Profit (TP) *</label><input type="number" step="any" class="form-input" id="t-tp" placeholder="1.09200"></div>
+          <div class="form-group"><label class="form-label">Risk to Reward (R:R)</label><input class="form-input" id="t-rr" placeholder="Auto-calculated" readonly style="background:var(--cyan-glow2);"></div>
+          <div class="form-group"><label class="form-label">Pips on SL</label><input class="form-input" id="t-pips-sl" placeholder="Auto" readonly style="background:var(--cyan-glow2);"></div>
+          <div class="form-group"><label class="form-label">Pips on TP</label><input class="form-input" id="t-pips-tp" placeholder="Auto" readonly style="background:var(--cyan-glow2);"></div>
+
+          <div class="grid-divider">📊 Risk Management</div>
+          <div class="form-group"><label class="form-label">Initial Capital ($)</label><input type="number" class="form-input" id="t-capital" placeholder="10000"></div>
+          <div class="form-group"><label class="form-label">Risk % per Trade</label><input type="number" step="0.1" class="form-input" id="t-risk-pct" placeholder="1.0"></div>
+          <div class="form-group"><label class="form-label">Risk Amount ($)</label><input class="form-input" id="t-risk-usd" placeholder="Auto" readonly style="background:var(--cyan-glow2);"></div>
+          <div class="form-group"><label class="form-label">Lot Size</label><input type="number" step="any" class="form-input" id="t-lots" placeholder="0.01"></div>
+
+          <div class="grid-divider">📋 Setup & Entry Reason</div>
+          <div class="form-group full-width">
+            <label class="form-label">Why did you take this trade? (Your Setup) *</label>
+            <textarea class="form-textarea" id="t-setup" placeholder="e.g. CHoCH confirmed on H1, OB mitigated on M15, liquidity sweep done, entry on FVG M5 during NY AM session..."></textarea>
+          </div>
+
+          <div class="grid-divider">🧠 Psychological State</div>
+          <div class="form-group full-width">
+            <label class="form-label">Mental state at time of trade (select all that apply)</label>
+            <div class="psy-cloud" id="psy-tags">
+              <div class="psy-chip" data-val="Confident" onclick="togglePsy(this)">😎 Confident</div>
+              <div class="psy-chip" data-val="Neutral" onclick="togglePsy(this)">😐 Neutral</div>
+              <div class="psy-chip dng" data-val="FOMO" onclick="togglePsy(this)">😨 FOMO</div>
+              <div class="psy-chip dng" data-val="Revenge Trade" onclick="togglePsy(this)">😡 Revenge Trade</div>
+              <div class="psy-chip dng" data-val="Overconfident" onclick="togglePsy(this)">🤩 Overconfident</div>
+              <div class="psy-chip dng" data-val="Fear" onclick="togglePsy(this)">😰 Fear</div>
+              <div class="psy-chip wrn" data-val="Off Setup" onclick="togglePsy(this)">⚠️ Off Setup</div>
+              <div class="psy-chip wrn" data-val="Impatient" onclick="togglePsy(this)">⏰ Impatient</div>
+              <div class="psy-chip" data-val="Disciplined" onclick="togglePsy(this)">🎯 Disciplined</div>
+              <div class="psy-chip" data-val="In the Zone" onclick="togglePsy(this)">🔥 In the Zone</div>
+              <div class="psy-chip wrn" data-val="Tired" onclick="togglePsy(this)">😴 Tired</div>
+              <div class="psy-chip dng" data-val="Overtrading" onclick="togglePsy(this)">❗ Overtrading</div>
+              <div class="psy-chip prp" data-val="No SL Set" onclick="togglePsy(this)">🚫 No SL Set</div>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Setup A+ Respected?</label>
+            <div class="radio-group" id="t-setup-ok">
+              <div class="radio-pill" onclick="selRadio('t-setup-ok',this,'Yes')" data-val="Yes">✅ Yes</div>
+              <div class="radio-pill" onclick="selRadio('t-setup-ok',this,'No')" data-val="No">❌ No</div>
+              <div class="radio-pill" onclick="selRadio('t-setup-ok',this,'Partial')" data-val="Partial">⚠️ Partial</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Risk Management Respected?</label>
+            <div class="radio-group" id="t-rm-ok">
+              <div class="radio-pill" onclick="selRadio('t-rm-ok',this,'Yes')" data-val="Yes">✅ Yes</div>
+              <div class="radio-pill" onclick="selRadio('t-rm-ok',this,'No')" data-val="No">❌ No</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">SL Placed Correctly?</label>
+            <div class="radio-group" id="t-sl-ok">
+              <div class="radio-pill" onclick="selRadio('t-sl-ok',this,'Yes')" data-val="Yes">✅ Yes</div>
+              <div class="radio-pill" onclick="selRadio('t-sl-ok',this,'No')" data-val="No">❌ No</div>
+            </div>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">Additional Notes</label>
+            <textarea class="form-textarea" id="t-notes" placeholder="Observations, what you would have done differently, lessons learned..."></textarea>
+          </div>
+
+          <div class="grid-divider">🖼️ Screenshot</div>
+          <div class="full-width" id="upload-wrap">
+            <div id="upload-free-msg" class="upgrade-note" style="display:none;">
+              📷 Screenshots are available on paid plans. <a onclick="openModal('modal-upgrade')">Upgrade to Starter ($5/mo)</a>
+            </div>
+            <div id="upload-zone" class="upload-area" style="display:none;" onclick="document.getElementById('file-inp').click()">
+              <input type="file" id="file-inp" accept="image/*" style="display:none;" onchange="handleUpload(this)">
+              <div class="upload-icon">📸</div>
+              <div class="upload-text">Click to attach a chart screenshot</div>
+              <div class="upload-hint">PNG, JPG, WEBP — max 10MB</div>
+            </div>
+            <div id="upload-preview" style="display:none;margin-top:.8rem;">
+              <img id="preview-img" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid var(--border);">
+              <br><button class="btn btn-danger" onclick="clearUpload()" style="margin-top:.5rem;">Remove Screenshot</button>
+            </div>
+          </div>
+
+          <div style="grid-column:1/-1;display:flex;gap:1rem;margin-top:.5rem;">
+            <button class="btn btn-solid" style="flex:1;padding:1rem;font-size:1rem;" onclick="saveTrade()">💾 Save Trade</button>
+            <button class="btn btn-ghost" style="padding:1rem 1.5rem;" onclick="resetForm()">🔄 Reset</button>
+          </div>
+          <div id="save-ok" class="alert alert-ok full-width" style="display:none;">✅ Trade saved successfully!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div id="dash-analytics" class="dash-section" style="display:none;">
+      <div class="page-header"><div><div class="page-title">Analytics</div><div class="page-sub">Performance breakdown and insights</div></div></div>
+      <div class="stats-row">
+        <div class="sc"><div class="sc-label">BEST SESSION</div><div class="sc-val c">NY AM</div><div class="sc-delta">80% win rate</div></div>
+        <div class="sc"><div class="sc-label">BEST PAIR</div><div class="sc-val c">EURUSD</div><div class="sc-delta">+2.4R avg</div></div>
+        <div class="sc"><div class="sc-label">AVG R:R</div><div class="sc-val g">1:2.3</div><div class="sc-delta">Across 3 trades</div></div>
+        <div class="sc"><div class="sc-label">FOMO / REVENGE</div><div class="sc-val r">1/3</div><div class="sc-delta">33% undisciplined</div></div>
+      </div>
+      <div class="charts-row">
+        <div class="chart-box">
+          <div class="chart-box-title">📊 P&L by Session</div>
+          <svg width="100%" height="160" viewBox="0 0 400 160">
+            <rect x="15" y="50" width="42" height="90" fill="rgba(0,212,255,.55)" rx="4"/>
+            <rect x="82" y="80" width="42" height="60" fill="rgba(0,212,255,.35)" rx="4"/>
+            <rect x="149" y="110" width="42" height="30" fill="rgba(255,59,92,.55)" rx="4"/>
+            <rect x="216" y="55" width="42" height="85" fill="rgba(0,212,255,.45)" rx="4"/>
+            <rect x="283" y="90" width="42" height="50" fill="rgba(0,212,255,.3)" rx="4"/>
+            <rect x="350" y="70" width="42" height="70" fill="rgba(0,212,255,.4)" rx="4"/>
+            <text x="36" y="152" fill="rgba(200,230,255,.5)" font-size="9" text-anchor="middle" font-family="JetBrains Mono">NY AM</text>
+            <text x="103" y="152" fill="rgba(200,230,255,.5)" font-size="9" text-anchor="middle" font-family="JetBrains Mono">NY PM</text>
+            <text x="170" y="152" fill="rgba(200,230,255,.5)" font-size="9" text-anchor="middle" font-family="JetBrains Mono">CBDR</text>
+            <text x="237" y="152" fill="rgba(200,230,255,.5)" font-size="9" text-anchor="middle" font-family="JetBrains Mono">LON</text>
+            <text x="304" y="152" fill="rgba(200,230,255,.5)" font-size="9" text-anchor="middle" font-family="JetBrains Mono">L.CLO</text>
+            <text x="371" y="152" fill="rgba(200,230,255,.5)" font-size="9" text-anchor="middle" font-family="JetBrains Mono">NY.L</text>
+          </svg>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-title">🧠 Psych. Breakdown</div>
+          <div style="display:flex;flex-direction:column;gap:.7rem;margin-top:.5rem;">
+            <div style="font-size:.82rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem;"><span>Confident</span><div style="flex:1;height:6px;background:var(--white-faint);border-radius:3px;"><div style="width:70%;height:100%;background:var(--green);border-radius:3px;"></div></div><span style="color:var(--green);font-family:var(--font-mono);font-size:.78rem;">70%</span></div>
+            <div style="font-size:.82rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem;"><span>Disciplined</span><div style="flex:1;height:6px;background:var(--white-faint);border-radius:3px;"><div style="width:60%;height:100%;background:var(--cyan);border-radius:3px;"></div></div><span style="color:var(--cyan);font-family:var(--font-mono);font-size:.78rem;">60%</span></div>
+            <div style="font-size:.82rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem;"><span>FOMO</span><div style="flex:1;height:6px;background:var(--white-faint);border-radius:3px;"><div style="width:20%;height:100%;background:var(--orange);border-radius:3px;"></div></div><span style="color:var(--orange);font-family:var(--font-mono);font-size:.78rem;">20%</span></div>
+            <div style="font-size:.82rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem;"><span>Revenge</span><div style="flex:1;height:6px;background:var(--white-faint);border-radius:3px;"><div style="width:10%;height:100%;background:var(--purple);border-radius:3px;"></div></div><span style="color:var(--purple);font-family:var(--font-mono);font-size:.78rem;">10%</span></div>
+            <div style="font-size:.82rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem;"><span>Off Setup</span><div style="flex:1;height:6px;background:var(--white-faint);border-radius:3px;"><div style="width:15%;height:100%;background:var(--yellow);border-radius:3px;"></div></div><span style="color:var(--yellow);font-family:var(--font-mono);font-size:.78rem;">15%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RULES -->
+    <div id="dash-rules" class="dash-section" style="display:none;">
+      <div class="page-header"><div><div class="page-title">My Trading Rules</div><div class="page-sub">Define your rules. JournifyX will check each trade against them.</div></div></div>
+      <div class="rules-editor">
+        <h3 style="font-family:var(--font-head);font-weight:600;margin-bottom:1.2rem;">📋 Active Rules</h3>
+        <div id="rules-list"></div>
+        <div class="add-rule-row">
+          <input class="form-input" id="new-rule-input" placeholder="e.g. Never trade without a confirmed setup..." onkeypress="if(event.key==='Enter')addRule()">
+          <button class="btn btn-solid" onclick="addRule()" style="padding:.78rem 1.4rem;">Add Rule</button>
+        </div>
+      </div>
+      <div class="rules-editor">
+        <h3 style="font-family:var(--font-head);font-weight:600;margin-bottom:1.5rem;">⚙️ Risk Management Parameters</h3>
+        <div class="trade-grid">
+          <div class="form-group"><label class="form-label">Base Capital ($)</label><input type="number" class="form-input" id="r-capital" value="10000"></div>
+          <div class="form-group"><label class="form-label">Max Risk % per Trade</label><input type="number" step="0.1" class="form-input" id="r-max-risk" value="1.0"></div>
+          <div class="form-group"><label class="form-label">Minimum R:R Accepted</label><input type="number" step="0.1" class="form-input" id="r-min-rr" value="2.0"></div>
+          <div class="form-group"><label class="form-label">Max Trades per Day</label><input type="number" class="form-input" id="r-max-trades" value="3"></div>
+          <div style="grid-column:1/-1;"><button class="btn btn-solid" style="padding:.85rem 2.5rem;" onclick="showTempAlert('rules-saved')">💾 Save Rules</button>
+          <div id="rules-saved" class="alert alert-ok" style="display:none;margin-top:1rem;">✅ Rules saved!</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE / KYC -->
+    <div id="dash-profile" class="dash-section" style="display:none;">
+      <div class="page-header"><div><div class="page-title">Profile & KYC</div><div class="page-sub">Complete your trader profile to personalize your experience</div></div></div>
+
+      <div class="kyc-card">
+        <div class="kyc-card-title">👤 Personal Information</div>
+        <div class="trade-grid">
+          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="p-fname" placeholder="Your first name"></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="p-lname" placeholder="Your last name"></div>
+          <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="email@example.com"></div>
+          <div class="form-group"><label class="form-label">Country</label>
+            <select class="form-select"><option>Algeria</option><option>France</option><option>Morocco</option><option>Tunisia</option><option>UAE</option><option>USA</option><option>UK</option><option>Other</option></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="kyc-card">
+        <div class="kyc-card-title">📊 Trader Profile (KYC)</div>
+
+        <div class="kyc-q">
+          <div class="kyc-q-label">1. How many years have you been trading?</div>
+          <div class="radio-group" id="kyc-years">
+            <div class="radio-pill" onclick="selRadio('kyc-years',this,'<1y')" data-val="<1y">Less than 1 year</div>
+            <div class="radio-pill" onclick="selRadio('kyc-years',this,'1-2y')" data-val="1-2y">1 to 2 years</div>
+            <div class="radio-pill" onclick="selRadio('kyc-years',this,'2-5y')" data-val="2-5y">2 to 5 years</div>
+            <div class="radio-pill" onclick="selRadio('kyc-years',this,'5+y')" data-val="5+y">5+ years</div>
+          </div>
+        </div>
+
+        <div class="kyc-q">
+          <div class="kyc-q-label">2. What type of capital do you trade with?</div>
+          <div class="radio-group" id="kyc-account">
+            <div class="radio-pill" onclick="selRadio('kyc-account',this,'Personal')" data-val="Personal">💰 Personal capital</div>
+            <div class="radio-pill" onclick="selRadio('kyc-account',this,'Funded')" data-val="Funded">🏦 Funded account (Prop Firm)</div>
+            <div class="radio-pill" onclick="selRadio('kyc-account',this,'Both')" data-val="Both">Both</div>
+          </div>
+        </div>
+
+        <div class="kyc-q">
+          <div class="kyc-q-label">3. What is your primary market?</div>
+          <div class="radio-group" id="kyc-market">
+            <div class="radio-pill" onclick="selRadio('kyc-market',this,'Forex')" data-val="Forex">📈 Forex</div>
+            <div class="radio-pill" onclick="selRadio('kyc-market',this,'Crypto')" data-val="Crypto">🪙 Crypto</div>
+            <div class="radio-pill" onclick="selRadio('kyc-market',this,'CFDs')" data-val="CFDs">📊 CFDs</div>
+            <div class="radio-pill" onclick="selRadio('kyc-market',this,'Futures')" data-val="Futures">⚡ Futures</div>
+            <div class="radio-pill" onclick="selRadio('kyc-market',this,'Multi')" data-val="Multi">🌐 Multi-market</div>
+          </div>
+        </div>
+
+        <div class="kyc-q">
+          <div class="kyc-q-label">4. Your main broker</div>
+          <input class="form-input" id="kyc-broker" placeholder="e.g. ICMarkets, FTMO, Forex.com, Binance...">
+        </div>
+
+        <div class="kyc-q">
+          <div class="kyc-q-label">5. Trading style</div>
+          <div class="radio-group" id="kyc-style">
+            <div class="radio-pill" onclick="selRadio('kyc-style',this,'Scalping')" data-val="Scalping">⚡ Scalping</div>
+            <div class="radio-pill" onclick="selRadio('kyc-style',this,'Day Trading')" data-val="Day Trading">📅 Day Trading</div>
+            <div class="radio-pill" onclick="selRadio('kyc-style',this,'Swing')" data-val="Swing">🌊 Swing</div>
+            <div class="radio-pill" onclick="selRadio('kyc-style',this,'Position')" data-val="Position">🏔️ Position</div>
+          </div>
+        </div>
+
+        <div class="kyc-q">
+          <div class="kyc-q-label">6. Trading methodology</div>
+          <div class="radio-group" id="kyc-method">
+            <div class="radio-pill" onclick="selRadio('kyc-method',this,'ICT/SMC')" data-val="ICT/SMC">🎯 ICT / SMC</div>
+            <div class="radio-pill" onclick="selRadio('kyc-method',this,'Price Action')" data-val="Price Action">📉 Price Action</div>
+            <div class="radio-pill" onclick="selRadio('kyc-method',this,'Indicators')" data-val="Indicators">📊 Indicators</div>
+            <div class="radio-pill" onclick="selRadio('kyc-method',this,'Hybrid')" data-val="Hybrid">🔀 Hybrid</div>
+          </div>
+        </div>
+
+        <button class="btn btn-solid" style="margin-top:1.5rem;padding:.9rem 2.5rem;" onclick="showTempAlert('profile-saved')">💾 Save Profile</button>
+        <div id="profile-saved" class="alert alert-ok" style="display:none;margin-top:1rem;">✅ Profile saved successfully!</div>
+      </div>
+
+      <div class="kyc-card">
+        <div class="kyc-card-title">💳 My Plan</div>
+        <div class="stats-row" style="margin-bottom:1.5rem;">
+          <div class="sc"><div class="sc-label">CURRENT PLAN</div><div class="sc-val c" id="cur-plan">FREE</div></div>
+          <div class="sc"><div class="sc-label">TRADES THIS MONTH</div><div class="sc-val" id="cur-trades-count">3 / 10</div></div>
+        </div>
+        <div class="upgrade-cards">
+          <div class="upgrade-card" onclick="doUpgrade('starter',this)"><div class="uc-plan">STARTER</div><div class="uc-price">$5<small style="font-size:.9rem">/mo</small></div><div class="uc-limit">30 trades + Screenshots</div></div>
+          <div class="upgrade-card" onclick="doUpgrade('pro',this)"><div class="uc-plan">PRO</div><div class="uc-price">$15<small style="font-size:.9rem">/mo</small></div><div class="uc-limit">Unlimited + All features</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPPORT -->
+    <div id="dash-support" class="dash-section" style="display:none;">
+      <div class="page-header"><div><div class="page-title">Support</div><div class="page-sub">We're here to help</div></div></div>
+      <div class="contact-wrap">
+        <div class="contact-info-list">
+          <div class="ci-item"><div class="ci-icon">📧</div><div class="ci-text"><h4>Email</h4><p>support@journifyx.com</p></div></div>
+          <div class="ci-item"><div class="ci-icon">💬</div><div class="ci-text"><h4>Discord</h4><p>discord.gg/journifyx</p></div></div>
+          <div class="ci-item"><div class="ci-icon">📱</div><div class="ci-text"><h4>Telegram</h4><p>@JournifyXSupport</p></div></div>
+          <div class="ci-item"><div class="ci-icon">📖</div><div class="ci-text"><h4>Documentation</h4><p>docs.journifyx.com</p></div></div>
+        </div>
+        <div class="contact-form-card">
+          <h3 style="font-family:var(--font-head);font-weight:600;margin-bottom:1.5rem;">Create a Support Ticket</h3>
+          <div class="form-group"><label class="form-label">Subject</label><input class="form-input" placeholder="Brief summary..."></div>
+          <div class="form-group"><label class="form-label">Category</label><select class="form-select"><option>Bug Report</option><option>Feature Request</option><option>Billing</option><option>Account Issue</option></select></div>
+          <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" placeholder="Describe your issue in detail..."></textarea></div>
+          <button class="btn btn-solid btn-full" onclick="showTempAlert('ticket-ok')">Submit Ticket</button>
+          <div id="ticket-ok" class="alert alert-ok" style="display:none;margin-top:.8rem;">✅ Ticket created! Response within 24 hours.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /dashboard-layout -->
+</div><!-- /page-dashboard -->
+
+<!-- ===================== MODALS ===================== -->
+
+<!-- REGISTER -->
+<div id="modal-register" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-register')">✕</button>
+    <div class="modal-logo">
+      <svg width="28" height="28" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#071426"/><path d="M7 25 L13 15 L19 19.5 L28 8" stroke="#00D4FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="28" cy="8" r="2.8" fill="#00D4FF"/></svg>
+      <span style="font-family:var(--font-head);font-weight:700;font-size:1.1rem;">Journify<span style="color:var(--cyan)">X</span></span>
+    </div>
+
+    <div id="reg-s1">
+      <h2>Create your account</h2>
+      <p class="modal-sub">Join thousands of traders who are improving with data.</p>
+      <div class="step-track"><div class="step-seg done"></div><div class="step-seg"></div><div class="step-seg"></div></div>
+      <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="r-fname" placeholder="Your first name"></div>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="r-email" placeholder="email@example.com"></div>
+      <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="r-pwd" placeholder="Minimum 8 characters"></div>
+      <div class="form-group"><label class="form-label">Confirm Password</label><input type="password" class="form-input" id="r-pwd2" placeholder="Repeat password"></div>
+      <button class="btn btn-solid btn-full" style="margin-top:.5rem;" onclick="regNext()">Continue →</button>
+      <div class="divider-text">or</div>
+      <p style="text-align:center;font-size:.85rem;color:var(--white-dim);">Already have an account? <a onclick="closeModal('modal-register');openModal('modal-login')" style="color:var(--cyan);cursor:pointer;">Log in</a></p>
+    </div>
+
+    <div id="reg-s2" style="display:none;">
+      <h2>Trader Profile</h2>
+      <p class="modal-sub">Help us personalize your experience</p>
+      <div class="step-track"><div class="step-seg done"></div><div class="step-seg done"></div><div class="step-seg"></div></div>
+      <div class="form-group"><label class="form-label">Years of trading experience</label>
+        <div class="radio-group" id="rg-years">
+          <div class="radio-pill" onclick="selRadio('rg-years',this,'<1')" data-val="<1">Less than 1 yr</div>
+          <div class="radio-pill" onclick="selRadio('rg-years',this,'1-2')" data-val="1-2">1–2 years</div>
+          <div class="radio-pill" onclick="selRadio('rg-years',this,'2-5')" data-val="2-5">2–5 years</div>
+          <div class="radio-pill" onclick="selRadio('rg-years',this,'5+')" data-val="5+">5+ years</div>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Type of capital</label>
+        <div class="radio-group" id="rg-capital">
+          <div class="radio-pill" onclick="selRadio('rg-capital',this,'Personal')" data-val="Personal">💰 Personal</div>
+          <div class="radio-pill" onclick="selRadio('rg-capital',this,'Funded')" data-val="Funded">🏦 Funded</div>
+          <div class="radio-pill" onclick="selRadio('rg-capital',this,'Both')" data-val="Both">Both</div>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Primary market</label>
+        <div class="radio-group" id="rg-market">
+          <div class="radio-pill" onclick="selRadio('rg-market',this,'Forex')" data-val="Forex">Forex</div>
+          <div class="radio-pill" onclick="selRadio('rg-market',this,'Crypto')" data-val="Crypto">Crypto</div>
+          <div class="radio-pill" onclick="selRadio('rg-market',this,'CFDs')" data-val="CFDs">CFDs</div>
+          <div class="radio-pill" onclick="selRadio('rg-market',this,'Futures')" data-val="Futures">Futures</div>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Broker</label><input class="form-input" id="rg-broker" placeholder="e.g. ICMarkets, FTMO..."></div>
+      <div style="display:flex;gap:.8rem;margin-top:.5rem;">
+        <button class="btn btn-ghost" onclick="goRegS(1)" style="flex:1;padding:.9rem;">← Back</button>
+        <button class="btn btn-solid" onclick="regNext()" style="flex:2;padding:.9rem;">Continue →</button>
+      </div>
+    </div>
+
+    <div id="reg-s3" style="display:none;">
+      <h2>Choose a Plan</h2>
+      <p class="modal-sub">You can change at any time. No credit card required for Free.</p>
+      <div class="step-track"><div class="step-seg done"></div><div class="step-seg done"></div><div class="step-seg done"></div></div>
+      <div style="display:flex;flex-direction:column;gap:.7rem;margin-bottom:1.5rem;">
+        <div class="radio-pill" id="rp-free" onclick="pickPlan('free')" style="padding:1rem;border-radius:var(--radius-sm);display:block;cursor:pointer;">
+          <div style="font-weight:700;font-size:.95rem;">FREE — $0/month</div>
+          <div style="font-size:.8rem;color:var(--white-dim);margin-top:.2rem;">10 trades/month · Basic journal</div>
+        </div>
+        <div class="radio-pill" id="rp-starter" onclick="pickPlan('starter')" style="padding:1rem;border-radius:var(--radius-sm);display:block;cursor:pointer;">
+          <div style="font-weight:700;font-size:.95rem;">STARTER — $5/month</div>
+          <div style="font-size:.8rem;color:var(--white-dim);margin-top:.2rem;">30 trades/month · Screenshots included</div>
+        </div>
+        <div class="radio-pill" id="rp-pro" onclick="pickPlan('pro')" style="padding:1rem;border-radius:var(--radius-sm);display:block;cursor:pointer;">
+          <div style="font-weight:700;font-size:.95rem;">PRO — $15/month</div>
+          <div style="font-size:.8rem;color:var(--white-dim);margin-top:.2rem;">Unlimited · Analytics · Export · Priority Support</div>
+        </div>
+      </div>
+      <button class="btn btn-solid btn-full" onclick="finishReg()">🚀 Create My Account</button>
+      <button class="btn btn-ghost btn-full" onclick="goRegS(2)" style="margin-top:.5rem;">← Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="modal-login" class="modal-overlay" style="display:none;">
+  <div class="modal" style="max-width:430px;">
+    <button class="modal-close" onclick="closeModal('modal-login')">✕</button>
+    <div class="modal-logo">
+      <svg width="28" height="28" viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="9" fill="#071426"/><path d="M7 25 L13 15 L19 19.5 L28 8" stroke="#00D4FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="28" cy="8" r="2.8" fill="#00D4FF"/></svg>
+      <span style="font-family:var(--font-head);font-weight:700;font-size:1.1rem;">Journify<span style="color:var(--cyan)">X</span></span>
+    </div>
+    <h2>Welcome back</h2>
+    <p class="modal-sub">Log in to your trading journal</p>
+    <div id="login-err" class="alert alert-err" style="display:none;">Incorrect email or password.</div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="l-email" placeholder="email@example.com"></div>
+    <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="l-pwd" placeholder="Your password"></div>
+    <button class="btn btn-solid btn-full" style="margin-top:.5rem;" onclick="doLogin()">Log In</button>
+    <div class="divider-text">or</div>
+    <button class="btn btn-ghost btn-full" onclick="demoLogin()">🎮 Enter Demo Dashboard</button>
+    <p style="text-align:center;margin-top:1rem;font-size:.85rem;color:var(--white-dim);">No account? <a onclick="closeModal('modal-login');openModal('modal-register')" style="color:var(--cyan);cursor:pointer;">Sign up free</a></p>
+  </div>
+</div>
+
+<!-- UPGRADE -->
+<div id="modal-upgrade" class="modal-overlay" style="display:none;">
+  <div class="modal" style="max-width:440px;text-align:center;">
+    <button class="modal-close" onclick="closeModal('modal-upgrade')">✕</button>
+    <div style="font-size:3rem;margin-bottom:1rem;">🚀</div>
+    <h2>Upgrade Your Plan</h2>
+    <p class="modal-sub">Unlock screenshots, more trades, and advanced analytics</p>
+    <div class="upgrade-options">
+      <div class="uopt" onclick="doUpgrade('starter');closeModal('modal-upgrade')">
+        <div><div class="uopt-name">Starter</div><div class="uopt-desc">30 trades/mo + Screenshots</div></div>
+        <div class="uopt-price">$5<span style="font-size:.8rem;color:var(--white-dim)">/mo</span></div>
+      </div>
+      <div class="uopt" onclick="doUpgrade('pro');closeModal('modal-upgrade')" style="border-color:var(--cyan);background:var(--cyan-glow2);">
+        <div><div class="uopt-name">Pro 🔥</div><div class="uopt-desc">Unlimited + Analytics + Export</div></div>
+        <div class="uopt-price">$15<span style="font-size:.8rem;color:var(--white-dim)">/mo</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== STATE ====================
+let user = null;
+let plan = 'free';
+const LIMITS = {free:10, starter:30, pro:Infinity};
+let trades = [
+  {date:'2025-01-15',time:'09:30',session:'NY AM',pair:'EURUSD',dir:'LONG',entry:1.08500,sl:1.08200,tp:1.09000,rr:'1:1.7',pipsSl:30,pipsTp:50,psy:'Confident, Disciplined',setup:'CHoCH confirmed H1, OB mitigated M15, entry on FVG',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
+  {date:'2025-01-17',time:'14:15',session:'NY PM',pair:'GBPUSD',dir:'SHORT',entry:1.27000,sl:1.27300,tp:1.26500,rr:'1:1.7',pipsSl:30,pipsTp:50,psy:'FOMO',setup:'No clear setup, sudden impulse',result:'LOSS',setupOk:'No',rmOk:'Yes',slOk:'No'},
+  {date:'2025-01-18',time:'10:00',session:'London Open',pair:'USDJPY',dir:'LONG',entry:148.500,sl:148.200,tp:149.200,rr:'1:2.3',pipsSl:30,pipsTp:70,psy:'In the Zone, Disciplined',setup:'FVG H4 filled, MSS M15, entry on EQH',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
+];
+let rules = ['Never trade without a confirmed setup','Max 1% risk per trade','No trades before 9:30 NY time','Respect the SL — never move it into loss'];
+let chosenPlan = 'free';
+let regStep = 1;
+
+// ==================== NAVIGATION ====================
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function showDash(id){
+  document.querySelectorAll('.dash-section').forEach(s=>s.style.display='none');
+  document.getElementById(id).style.display='block';
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('act'));
+  const m={
+    'dash-overview':'nav-overview','dash-trades':'nav-trades',
+    'dash-new':'nav-new','dash-analytics':'nav-analytics',
+    'dash-rules':'nav-rules','dash-profile':'nav-profile','dash-support':'nav-support'
+  };
+  if(m[id]) document.getElementById(m[id])?.classList.add('act');
+  if(id==='dash-trades') renderAll();
+  if(id==='dash-rules') renderRules();
+  if(id==='dash-new') updateUploadUI();
+}
+
+// ==================== MODALS ====================
+function openModal(id){document.getElementById(id).style.display='flex';}
+function closeModal(id){document.getElementById(id).style.display='none';}
+window.addEventListener('click',e=>{
+  ['modal-register','modal-login','modal-upgrade'].forEach(id=>{
+    const m=document.getElementById(id);
+    if(e.target===m) closeModal(id);
+  });
+});
+
+// ==================== REGISTER ====================
+function regNext(){
+  if(regStep===1){
+    const f=document.getElementById('r-fname').value.trim();
+    const e=document.getElementById('r-email').value.trim();
+    const p=document.getElementById('r-pwd').value;
+    const p2=document.getElementById('r-pwd2').value;
+    if(!f||!e) return alert('Please fill in all fields.');
+    if(p.length<8) return alert('Password must be at least 8 characters.');
+    if(p!==p2) return alert('Passwords do not match.');
+    goRegS(2);
+  } else if(regStep===2){
+    goRegS(3);
+  }
+}
+function goRegS(n){
+  document.getElementById('reg-s'+regStep).style.display='none';
+  regStep=n;
+  document.getElementById('reg-s'+n).style.display='block';
+}
+function pickPlan(p){
+  chosenPlan=p;
+  ['free','starter','pro'].forEach(k=>document.getElementById('rp-'+k)?.classList.remove('sel'));
+  document.getElementById('rp-'+p)?.classList.add('sel');
+}
+function finishReg(){
+  if(!chosenPlan) chosenPlan='free';
+  const name=document.getElementById('r-fname').value||'Trader';
+  user={name};
+  plan=chosenPlan;
+  closeModal('modal-register');
+  enterDash(name);
+}
+
+// ==================== LOGIN ====================
+function doLogin(){
+  const email=document.getElementById('l-email').value;
+  const name=email?email.split('@')[0]:'Trader';
+  user={name};plan='free';
+  closeModal('modal-login');
+  enterDash(name);
+}
+function demoLogin(){
+  user={name:'Demo Trader'};plan='pro';
+  closeModal('modal-login');
+  enterDash('Demo Trader');
+}
+
+function enterDash(name){
+  document.getElementById('nav-greeting').textContent='👋 '+name;
+  updatePlanUI();
+  renderOverview();
+  showPage('page-dashboard');
+  showDash('dash-overview');
+}
+function logout(){user=null;plan='free';showPage('page-landing');}
+
+// ==================== PLAN UI ====================
+function updatePlanUI(){
+  const count=trades.length;
+  const lim=LIMITS[plan];
+  const pct=lim===Infinity?15:Math.min((count/lim)*100,100);
+  const names={free:'FREE PLAN',starter:'STARTER',pro:'PRO PLAN'};
+  document.getElementById('sb-plan-name').textContent=names[plan]||'FREE PLAN';
+  document.getElementById('sb-plan-usage').textContent=count+' / '+(lim===Infinity?'∞':lim)+' trades';
+  document.getElementById('sb-fill').style.width=pct+'%';
+  if(document.getElementById('cur-plan')) document.getElementById('cur-plan').textContent=plan.toUpperCase();
+  if(document.getElementById('cur-trades-count')) document.getElementById('cur-trades-count').textContent=count+' / '+(lim===Infinity?'∞':lim);
+}
+
+// ==================== TRADES RENDER ====================
+function trRow(t, full=false){
+  const dir=t.dir==='LONG'?'<span class="badge b-long">LONG</span>':'<span class="badge b-short">SHORT</span>';
+  const res=t.result==='WIN'?'<span class="badge b-win">WIN</span>':t.result==='LOSS'?'<span class="badge b-loss">LOSS</span>':'<span class="badge b-be">BE</span>';
+  let psy='<span class="badge b-neutral">'+t.psy.split(',')[0].trim()+'</span>';
+  if(t.psy.includes('FOMO')) psy='<span class="badge b-fomo">FOMO</span>';
+  else if(t.psy.includes('Revenge')) psy='<span class="badge b-revenge">REVENGE</span>';
+  else if(t.psy.includes('Confident')||t.psy.includes('Zone')) psy='<span class="badge b-conf">'+t.psy.split(',')[0].trim()+'</span>';
+  let row=`<tr>
+    <td class="mono">${t.date}</td>
+    <td class="cell-pair">${t.pair}</td>
+    <td style="font-size:.82rem;">${t.session}</td>
+    <td>${dir}</td>
+    <td class="mono">${t.entry}</td>
+    <td class="mono" style="color:var(--red)">${t.sl}</td>
+    <td class="mono" style="color:var(--green)">${t.tp}</td>
+    <td class="mono">${t.rr}</td>
+    <td class="mono">${t.pipsSl}</td>`;
+  if(full) row+=`<td class="mono">${t.pipsTp}</td>`;
+  row+=`<td>${psy}</td>`;
+  if(full) row+=`<td style="font-size:.78rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${t.setup}">${t.setup.substring(0,28)}…</td>`;
+  row+=`<td>${res}</td></tr>`;
+  return row;
+}
+function renderOverview(){
+  const tb=document.getElementById('tbody-overview');
+  if(tb) tb.innerHTML=trades.slice(-3).reverse().map(t=>trRow(t,false)).join('');
+  calcStats();
+}
+function renderAll(filter='all'){
+  const tb=document.getElementById('tbody-all');
+  if(!tb) return;
+  const list=filter==='all'?trades:trades.filter(t=>t.session===filter);
+  tb.innerHTML=list.map(t=>trRow(t,true)).join('');
+}
+function filterSess(s,el){
+  document.querySelectorAll('.session-pill').forEach(p=>p.classList.remove('act'));
+  el.classList.add('act');
+  renderAll(s);
+}
+function calcStats(){
+  const wins=trades.filter(t=>t.result==='WIN').length;
+  const losses=trades.filter(t=>t.result==='LOSS').length;
+  const wr=trades.length?((wins/trades.length)*100).toFixed(1)+'%':'0%';
+  const pnl=(wins*2-losses*1);
+  const pnlStr=(pnl>=0?'+':'')+pnl.toFixed(1)+'R';
+  const ok=trades.filter(t=>t.setupOk==='Yes').length;
+  const rp=trades.length?Math.round(ok/trades.length*100)+'%':'0%';
+  document.getElementById('ov-total').textContent=trades.length;
+  document.getElementById('ov-wr').textContent=wr;
+  document.getElementById('ov-pnl').textContent=pnlStr;
+  document.getElementById('ov-pnl').className='sc-val '+(pnl>=0?'g':'r');
+  document.getElementById('ov-rules').textContent=rp;
+  updatePlanUI();
+}
+
+// ==================== TRADE FORM ====================
+function autoCalc(){
+  const entry=parseFloat(document.getElementById('t-entry').value)||0;
+  const sl=parseFloat(document.getElementById('t-sl').value)||0;
+  const tp=parseFloat(document.getElementById('t-tp').value)||0;
+  if(entry&&sl&&tp){
+    const spips=Math.abs(entry-sl)*10000;
+    const tpips=Math.abs(tp-entry)*10000;
+    const rr=spips>0?(tpips/spips).toFixed(2):0;
+    document.getElementById('t-pips-sl').value=spips.toFixed(1);
+    document.getElementById('t-pips-tp').value=tpips.toFixed(1);
+    document.getElementById('t-rr').value='1:'+rr;
+  }
+  const cap=parseFloat(document.getElementById('t-capital').value)||0;
+  const rp=parseFloat(document.getElementById('t-risk-pct').value)||0;
+  if(cap&&rp) document.getElementById('t-risk-usd').value=(cap*rp/100).toFixed(2);
+}
+['t-entry','t-sl','t-tp','t-capital','t-risk-pct'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('input',autoCalc);
+});
+
+function togglePsy(el){el.classList.toggle('sel');}
+function getPsy(){
+  const tags=Array.from(document.querySelectorAll('#psy-tags .psy-chip.sel')).map(t=>t.dataset.val);
+  return tags.length?tags.join(', '):'Neutral';
+}
+function selRadio(gid,el,val){
+  document.querySelectorAll('#'+gid+' .radio-pill').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function getRadio(gid){
+  const s=document.querySelector('#'+gid+' .radio-pill.sel');
+  return s?s.dataset.val:'—';
+}
+
+function saveTrade(){
+  const lim=LIMITS[plan];
+  if(trades.length>=lim){document.getElementById('limit-alert').style.display='block';return;}
+  const date=document.getElementById('t-date').value;
+  const session=document.getElementById('t-session').value;
+  const pair=document.getElementById('t-pair').value;
+  if(!date||!session||!pair) return alert('Fill in required fields (Date, Session, Pair).');
+  const entry=parseFloat(document.getElementById('t-entry').value)||0;
+  const sl=parseFloat(document.getElementById('t-sl').value)||0;
+  const tp=parseFloat(document.getElementById('t-tp').value)||0;
+  const rr=document.getElementById('t-rr').value||'—';
+  const pipsSl=parseFloat(document.getElementById('t-pips-sl').value)||0;
+  const pipsTp=parseFloat(document.getElementById('t-pips-tp').value)||0;
+  const psy=getPsy();
+  const setup=document.getElementById('t-setup').value||'No setup provided';
+  const result=document.getElementById('t-result').value;
+  const dir=document.getElementById('t-dir').value.includes('LONG')?'LONG':'SHORT';
+  const time=document.getElementById('t-time').value||'';
+  trades.push({date,time,session,pair,dir,entry,sl,tp,rr,pipsSl,pipsTp,psy,setup,result,setupOk:getRadio('t-setup-ok'),rmOk:getRadio('t-rm-ok'),slOk:getRadio('t-sl-ok')});
+  showTempAlert('save-ok');
+  renderOverview();
+  resetForm();
+}
+function resetForm(){
+  ['t-date','t-time','t-entry','t-sl','t-tp','t-rr','t-pips-sl','t-pips-tp','t-capital','t-risk-pct','t-risk-usd','t-lots','t-setup','t-notes'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.value='';
+  });
+  document.querySelectorAll('#psy-tags .psy-chip').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('.radio-pill').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('t-session').value='';
+  document.getElementById('t-pair').value='';
+  document.getElementById('t-result').value='WIN';
+  document.getElementById('limit-alert').style.display='none';
+  clearUpload();
+}
+
+// ==================== UPLOAD ====================
+function updateUploadUI(){
+  const fm=document.getElementById('upload-free-msg');
+  const uz=document.getElementById('upload-zone');
+  if(!fm||!uz) return;
+  if(plan==='free'){fm.style.display='block';uz.style.display='none';}
+  else{fm.style.display='none';uz.style.display='block';}
+}
+function handleUpload(inp){
+  const file=inp.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('preview-img').src=e.target.result;
+    document.getElementById('upload-preview').style.display='block';
+    document.getElementById('upload-zone').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+function clearUpload(){
+  document.getElementById('upload-preview').style.display='none';
+  if(plan!=='free') document.getElementById('upload-zone').style.display='block';
+  const fi=document.getElementById('file-inp');
+  if(fi) fi.value='';
+}
+
+// ==================== RULES ====================
+function renderRules(){
+  const list=document.getElementById('rules-list');
+  if(!list) return;
+  list.innerHTML=rules.map((r,i)=>`
+    <div class="rule-row">
+      <span>📌 ${r}</span>
+      <button class="rule-del" onclick="removeRule(${i})" title="Remove">✕</button>
+    </div>`).join('');
+}
+function addRule(){
+  const inp=document.getElementById('new-rule-input');
+  const v=inp.value.trim();
+  if(!v) return;
+  rules.push(v);inp.value='';renderRules();
+}
+function removeRule(i){rules.splice(i,1);renderRules();}
+
+// ==================== UPGRADE ====================
+function doUpgrade(p){
+  plan=p;updatePlanUI();updateUploadUI();
+  const names={starter:'Starter ($5/mo)',pro:'Pro ($15/mo)'};
+  alert('✅ Plan updated: '+names[p]);
+}
+
+// ==================== HELPERS ====================
+function showTempAlert(id){
+  const el=document.getElementById(id);
+  if(el){el.style.display='block';setTimeout(()=>el.style.display='none',3500);}
+}
+</script>
+</body>
+</html>
