@@ -757,7 +757,7 @@ footer{
     <div class="feat-card">
       <div class="feat-icon">⏰</div>
       <div class="feat-title">ICT Sessions</div>
-      <div class="feat-desc">NY AM, NY PM, CBDR, London/Asia, London Open, London Close, NY Launch — filter and analyze by session.</div>
+      <div class="feat-desc">Asia, London, New York AM, New York PM, London Close KZ, CBDR (currencies) — all 6 sessions covered.</div>
     </div>
     <div class="feat-card">
       <div class="feat-icon">📐</div>
@@ -793,13 +793,12 @@ footer{
     <div class="section-label">ICT / SMC Compatible</div>
     <div class="section-title">All major trading sessions</div>
     <div style="display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center;margin-top:2rem;">
+      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🌏 Asia</div>
+      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🇬🇧 London</div>
       <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🇺🇸 New York AM</div>
       <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🌆 New York PM</div>
-      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">📏 CBDR</div>
-      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🌍 London / Asia</div>
-      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🔔 London Open</div>
-      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🔕 London Close</div>
-      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🚀 NY Launch</div>
+      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">🔕 London Close KZ</div>
+      <div style="padding:.6rem 1.4rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:50px;font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">📏 CBDR <span style="font-size:.72rem;opacity:.7">(Currencies)</span></div>
     </div>
   </div>
 </div>
@@ -1084,13 +1083,12 @@ footer{
       </div>
       <div class="session-pills">
         <div class="session-pill act" onclick="filterSess('all',this)">All</div>
-        <div class="session-pill" onclick="filterSess('NY AM',this)">NY AM</div>
-        <div class="session-pill" onclick="filterSess('NY PM',this)">NY PM</div>
-        <div class="session-pill" onclick="filterSess('CBDR',this)">CBDR</div>
-        <div class="session-pill" onclick="filterSess('London/Asia',this)">London/Asia</div>
-        <div class="session-pill" onclick="filterSess('London Open',this)">London Open</div>
-        <div class="session-pill" onclick="filterSess('London Close',this)">London Close</div>
-        <div class="session-pill" onclick="filterSess('NY Launch',this)">NY Launch</div>
+        <div class="session-pill" onclick="filterSess('Asia',this)">🌏 Asia</div>
+        <div class="session-pill" onclick="filterSess('London',this)">🇬🇧 London</div>
+        <div class="session-pill" onclick="filterSess('New York AM',this)">🇺🇸 NY AM</div>
+        <div class="session-pill" onclick="filterSess('New York PM',this)">🌆 NY PM</div>
+        <div class="session-pill" onclick="filterSess('London Close KZ',this)">🔕 London Close KZ</div>
+        <div class="session-pill" onclick="filterSess('CBDR',this)">📏 CBDR</div>
       </div>
       <div class="table-wrap">
         <table class="tbl"><thead><tr>
@@ -1116,13 +1114,12 @@ footer{
             <label class="form-label">Session *</label>
             <select class="form-select" id="t-session" onchange="handleSessionChange()">
               <option value="">-- Select --</option>
-              <option value="NY AM">NY AM</option>
-              <option value="NY PM">NY PM (= CBDR for Forex)</option>
-              <option value="CBDR">CBDR (Currencies only)</option>
-              <option value="London/Asia">London/Asia</option>
-              <option value="London Open">London Open</option>
-              <option value="London Close">London Close</option>
-              <option value="NY Launch">NY Launch</option>
+              <option value="Asia">🌏 Asia</option>
+              <option value="London">🇬🇧 London</option>
+              <option value="New York AM">🇺🇸 New York AM</option>
+              <option value="New York PM">🌆 New York PM</option>
+              <option value="London Close KZ">🔕 London Close KZ</option>
+              <option value="CBDR">📏 CBDR (Currencies only)</option>
             </select>
             <div id="cbdr-warning" style="display:none;margin-top:.4rem;padding:.5rem .8rem;background:rgba(255,214,0,.08);border:1px solid rgba(255,214,0,.25);border-radius:6px;font-size:.78rem;color:var(--yellow);">
               ⚠️ <strong>CBDR</strong> is only valid for <strong>Currency pairs (Forex)</strong>. Not applicable to Stocks, Indices or Crypto.
@@ -1260,19 +1257,19 @@ footer{
       <div class="charts-row" style="margin-bottom:1.2rem;">
         <div class="chart-box">
           <div class="chart-box-title">📊 P&L by Session</div>
-          <svg width="100%" height="160" viewBox="0 0 400 160">
-            <rect x="15" y="50" width="42" height="90" fill="rgba(0,212,255,.55)" rx="4"/>
-            <rect x="82" y="80" width="42" height="60" fill="rgba(0,212,255,.35)" rx="4"/>
-            <rect x="149" y="110" width="42" height="30" fill="rgba(255,59,92,.55)" rx="4"/>
-            <rect x="216" y="55" width="42" height="85" fill="rgba(0,212,255,.45)" rx="4"/>
-            <rect x="283" y="90" width="42" height="50" fill="rgba(0,212,255,.3)" rx="4"/>
-            <rect x="350" y="70" width="42" height="70" fill="rgba(0,212,255,.4)" rx="4"/>
-            <text x="36" y="152" fill="rgba(200,230,255,.5)" font-size="9" text-anchor="middle" font-family="JetBrains Mono">NY AM</text>
-            <text x="103" y="152" fill="rgba(200,230,255,.5)" font-size="9" text-anchor="middle" font-family="JetBrains Mono">NY PM</text>
-            <text x="170" y="152" fill="rgba(200,230,255,.5)" font-size="9" text-anchor="middle" font-family="JetBrains Mono">CBDR</text>
-            <text x="237" y="152" fill="rgba(200,230,255,.5)" font-size="9" text-anchor="middle" font-family="JetBrains Mono">LON</text>
-            <text x="304" y="152" fill="rgba(200,230,255,.5)" font-size="9" text-anchor="middle" font-family="JetBrains Mono">L.CLO</text>
-            <text x="371" y="152" fill="rgba(200,230,255,.5)" font-size="9" text-anchor="middle" font-family="JetBrains Mono">NY.L</text>
+          <svg width="100%" height="160" viewBox="0 0 440 160">
+            <rect x="10" y="40" width="50" height="100" fill="rgba(0,212,255,.55)" rx="4"/>
+            <rect x="82" y="55" width="50" height="85" fill="rgba(0,212,255,.45)" rx="4"/>
+            <rect x="154" y="50" width="50" height="90" fill="rgba(0,212,255,.6)" rx="4"/>
+            <rect x="226" y="95" width="50" height="45" fill="rgba(0,212,255,.3)" rx="4"/>
+            <rect x="298" y="110" width="50" height="30" fill="rgba(255,59,92,.55)" rx="4"/>
+            <rect x="370" y="80" width="50" height="60" fill="rgba(0,212,255,.35)" rx="4"/>
+            <text x="35" y="152" fill="rgba(200,230,255,.55)" font-size="8.5" text-anchor="middle" font-family="JetBrains Mono">ASIA</text>
+            <text x="107" y="152" fill="rgba(200,230,255,.55)" font-size="8.5" text-anchor="middle" font-family="JetBrains Mono">LONDON</text>
+            <text x="179" y="152" fill="rgba(200,230,255,.55)" font-size="8.5" text-anchor="middle" font-family="JetBrains Mono">NY AM</text>
+            <text x="251" y="152" fill="rgba(200,230,255,.55)" font-size="8.5" text-anchor="middle" font-family="JetBrains Mono">NY PM</text>
+            <text x="323" y="152" fill="rgba(200,230,255,.55)" font-size="8" text-anchor="middle" font-family="JetBrains Mono">LON.KZ</text>
+            <text x="395" y="152" fill="rgba(200,230,255,.55)" font-size="8.5" text-anchor="middle" font-family="JetBrains Mono">CBDR</text>
           </svg>
         </div>
         <div class="chart-box">
@@ -1618,13 +1615,15 @@ let user = null;
 let plan = 'free';
 const LIMITS = {free:10, starter:30, pro:Infinity};
 let trades = [
-  {date:'2025-01-15',time:'09:30',session:'NY AM',pair:'EURUSD',dir:'LONG',entry:1.08500,sl:1.08200,tp:1.09000,rr:'1:1.7',pipsSl:30,pipsTp:50,psy:'Confident, Disciplined',setup:'CHoCH confirmed H1, OB mitigated M15, entry on FVG',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
-  {date:'2025-01-17',time:'14:15',session:'NY PM',pair:'GBPUSD',dir:'SHORT',entry:1.27000,sl:1.27300,tp:1.26500,rr:'1:1.7',pipsSl:30,pipsTp:50,psy:'FOMO',setup:'No clear setup, sudden impulse',result:'LOSS',setupOk:'No',rmOk:'Yes',slOk:'No'},
-  {date:'2025-01-18',time:'10:00',session:'London Open',pair:'USDJPY',dir:'LONG',entry:148.500,sl:148.200,tp:149.200,rr:'1:2.3',pipsSl:30,pipsTp:70,psy:'In the Zone, Disciplined',setup:'FVG H4 filled, MSS M15, entry on EQH',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
-  {date:'2025-02-03',time:'10:15',session:'London Open',pair:'EURUSD',dir:'LONG',entry:1.07200,sl:1.06900,tp:1.07900,rr:'1:2.3',pipsSl:30,pipsTp:70,psy:'Confident',setup:'Order Block retest on M15',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
-  {date:'2025-02-10',time:'09:35',session:'NY AM',pair:'GBPUSD',dir:'SHORT',entry:1.26500,sl:1.26800,tp:1.25900,rr:'1:2.0',pipsSl:30,pipsTp:60,psy:'Disciplined',setup:'CHoCH on H1 + BOS confirmed',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
-  {date:'2025-03-05',time:'14:00',session:'NY PM',pair:'USDJPY',dir:'SHORT',entry:149.800,sl:150.100,tp:149.200,rr:'1:2.0',pipsSl:30,pipsTp:60,psy:'FOMO, Impatient',setup:'Weak setup, late entry',result:'LOSS',setupOk:'No',rmOk:'No',slOk:'No'},
-  {date:'2025-03-12',time:'10:00',session:'London Open',pair:'EURUSD',dir:'LONG',entry:1.08100,sl:1.07800,tp:1.08800,rr:'1:2.3',pipsSl:30,pipsTp:70,psy:'In the Zone',setup:'FVG on M15 after sweep of EQL',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
+  {date:'2025-01-15',time:'09:30',session:'New York AM',pair:'EURUSD',dir:'LONG',entry:1.08500,sl:1.08200,tp:1.09000,rr:'1:1.7',pipsSl:30,pipsTp:50,psy:'Confident, Disciplined',setup:'CHoCH confirmed H1, OB mitigated M15, entry on FVG',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
+  {date:'2025-01-17',time:'14:15',session:'New York PM',pair:'GBPUSD',dir:'SHORT',entry:1.27000,sl:1.27300,tp:1.26500,rr:'1:1.7',pipsSl:30,pipsTp:50,psy:'FOMO',setup:'No clear setup, sudden impulse',result:'LOSS',setupOk:'No',rmOk:'Yes',slOk:'No'},
+  {date:'2025-01-18',time:'10:00',session:'London',pair:'USDJPY',dir:'LONG',entry:148.500,sl:148.200,tp:149.200,rr:'1:2.3',pipsSl:30,pipsTp:70,psy:'In the Zone, Disciplined',setup:'FVG H4 filled, MSS M15, entry on EQH',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
+  {date:'2025-02-03',time:'10:15',session:'London',pair:'EURUSD',dir:'LONG',entry:1.07200,sl:1.06900,tp:1.07900,rr:'1:2.3',pipsSl:30,pipsTp:70,psy:'Confident',setup:'Order Block retest on M15',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
+  {date:'2025-02-10',time:'09:35',session:'New York AM',pair:'GBPUSD',dir:'SHORT',entry:1.26500,sl:1.26800,tp:1.25900,rr:'1:2.0',pipsSl:30,pipsTp:60,psy:'Disciplined',setup:'CHoCH on H1 + BOS confirmed',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
+  {date:'2025-03-05',time:'14:00',session:'New York PM',pair:'USDJPY',dir:'SHORT',entry:149.800,sl:150.100,tp:149.200,rr:'1:2.0',pipsSl:30,pipsTp:60,psy:'FOMO, Impatient',setup:'Weak setup, late entry',result:'LOSS',setupOk:'No',rmOk:'No',slOk:'No'},
+  {date:'2025-03-12',time:'10:00',session:'London',pair:'EURUSD',dir:'LONG',entry:1.08100,sl:1.07800,tp:1.08800,rr:'1:2.3',pipsSl:30,pipsTp:70,psy:'In the Zone',setup:'FVG on M15 after sweep of EQL',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
+  {date:'2025-03-18',time:'03:30',session:'Asia',pair:'AUDUSD',dir:'LONG',entry:0.65200,sl:0.64900,tp:0.65800,rr:'1:2.0',pipsSl:30,pipsTp:60,psy:'Confident',setup:'Asia range breakout, OB on H1',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
+  {date:'2025-03-20',time:'11:30',session:'London Close KZ',pair:'GBPUSD',dir:'SHORT',entry:1.27200,sl:1.27500,tp:1.26600,rr:'1:2.0',pipsSl:30,pipsTp:60,psy:'Disciplined',setup:'KZ liquidity sweep, MSS confirmed',result:'WIN',setupOk:'Yes',rmOk:'Yes',slOk:'Yes'},
 ];
 let rules = ['Never trade without a confirmed setup','Max 1% risk per trade','No trades before 9:30 NY time','Respect the SL — never move it into loss'];
 let chosenPlan = 'free';
