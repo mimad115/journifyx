@@ -10,7 +10,9 @@
 <meta property="og:type" content="website">
 <title>JournifyX — Professional Trading Journal</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23050A14'/><path d='M6 22 L12 14 L18 18 L26 8' stroke='%2300D4FF' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/><circle cx='26' cy='8' r='2.5' fill='%2300D4FF'/></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #040C1A;
@@ -38,9 +40,9 @@
   --yellow-dim: rgba(255,214,0,.1);
   --orange: #FF6B35;
   --purple: #8B5CF6;
-  --font-head: 'Clash Display', sans-serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-head:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --font-body:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --font-mono:'JetBrains Mono','Fira Code','Courier New',monospace;
   --radius: 16px;
   --radius-sm: 10px;
   --shadow: 0 20px 60px rgba(0,0,0,.5);
@@ -1054,7 +1056,7 @@ footer{
               <circle cx="55" cy="55" r="42" fill="none" stroke="#071426" stroke-width="20"/>
               <circle cx="55" cy="55" r="42" fill="none" stroke="#00FFB0" stroke-width="20" stroke-dasharray="176 88" stroke-dashoffset="-65" transform="rotate(-90 55 55)"/>
               <circle cx="55" cy="55" r="42" fill="none" stroke="#FF3B5C" stroke-width="20" stroke-dasharray="88 176" stroke-dashoffset="-241" transform="rotate(-90 55 55)"/>
-              <text x="55" y="59" text-anchor="middle" fill="white" font-size="14" font-weight="700" font-family="Clash Display">67%</text>
+              <text x="55" y="59" text-anchor="middle" fill="white" font-size="14" font-weight="700" font-family="Space Grotesk, sans-serif">67%</text>
             </svg>
             <div class="donut-legend">
               <div class="legend-row"><div class="legend-dot" style="background:var(--green)"></div><span style="font-size:.8rem">Wins (2)</span></div>
@@ -1580,7 +1582,7 @@ footer{
         <div class="sc-avatar">🎯</div>
         <div>
           <div class="sc-head-name">JournifyX Support</div>
-          <div class="sc-head-status">Online · Usually replies in &lt;1h</div>
+          <div class="sc-head-status">Online · Usually replies in 1h or less</div>
         </div>
       </div>
       <button class="sc-close" onclick="toggleSupportChat()">✕</button>
