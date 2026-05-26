@@ -1111,7 +1111,13 @@ footer{
 
           <div class="grid-divider">📅 Trade Info</div>
           <div class="form-group"><label class="form-label">Date *</label><input type="date" class="form-input" id="t-date"></div>
-          <div class="form-group"><label class="form-label">Entry Time *</label><input type="time" class="form-input" id="t-time"></div>
+          <div class="form-group">
+            <label class="form-label">Entry Time * <span style="color:var(--cyan);font-size:.68rem;font-family:var(--font-mono);">🕐 NEW YORK TIME</span></label>
+            <input type="time" class="form-input" id="t-time" onchange="autoDetectSession(this.value)">
+            <div id="session-auto-hint" style="display:none;margin-top:.4rem;padding:.45rem .8rem;background:var(--cyan-glow);border:1px solid var(--border-bright);border-radius:6px;font-size:.78rem;color:var(--cyan);font-family:var(--font-mono);">
+              ⚡ Session auto-detected
+            </div>
+          </div>
           <div class="form-group">
             <label class="form-label">Session *</label>
             <select class="form-select" id="t-session" onchange="handleSessionChange()">
@@ -1932,6 +1938,79 @@ function handleSessionChange(){
   checkCbdrPairConflict(sess,pair);
 }
 
+// ==================== AUTO SESSION DETECTION (NY TIME) ====================
+// Asia:          19:00 – 00:00 NY
+// London:        01:00 – 05:00 NY
+// New York AM:   07:00 – 10:00 NY
+// London Close KZ: 10:00 – 12:00 NY
+// New York PM:   13:30 – 16:00 NY
+// CBDR:          14:00 – 20:00 NY (currencies only — shown as note, not auto-set for non-forex)
+
+function autoDetectSession(timeStr){
+  if(!timeStr) return;
+  const [hStr, mStr] = timeStr.split(':');
+  const h = parseInt(hStr);
+  const m = parseInt(mStr);
+  const totalMins = h * 60 + m;
+
+  // Time ranges in minutes from midnight (NY time)
+  const ranges = [
+    { name:'Asia',             start: 19*60,      end: 24*60     }, // 19:00–00:00
+    { name:'Asia',             start: 0,           end: 0*60+1   }, // handle midnight edge (00:00)
+    { name:'London',           start: 1*60,        end: 5*60     }, // 01:00–05:00
+    { name:'New York AM',      start: 7*60,        end: 10*60    }, // 07:00–10:00
+    { name:'London Close KZ',  start: 10*60,       end: 12*60    }, // 10:00–12:00
+    { name:'New York PM',      start: 13*60+30,    end: 16*60    }, // 13:30–16:00
+    { name:'CBDR',             start: 14*60,       end: 20*60    }, // 14:00–20:00
+  ];
+
+  // Priority order: more specific windows take priority over broader ones
+  // When overlap: London Close KZ (10-12) > NY AM (ends at 10)
+  // When overlap: CBDR (14-20) and NY PM (13:30-16) — NY PM takes priority for non-forex
+  // CBDR only auto-set if pair is forex
+  const pair = document.getElementById('t-pair').value;
+  const isForex = getPairType(pair) === 'forex';
+
+  let detected = null;
+
+  // Check in priority order
+  if      (totalMins >= 19*60)                          detected = 'Asia';
+  else if (totalMins >= 0     && totalMins < 1*60)      detected = 'Asia';
+  else if (totalMins >= 1*60  && totalMins < 5*60)      detected = 'London';
+  else if (totalMins >= 7*60  && totalMins < 10*60)     detected = 'New York AM';
+  else if (totalMins >= 10*60 && totalMins < 12*60)     detected = 'London Close KZ';
+  else if (totalMins >= 13*60+30 && totalMins < 14*60)  detected = 'New York PM';   // 13:30–14:00 → NY PM only
+  else if (totalMins >= 14*60 && totalMins < 16*60) {
+    // 14:00–16:00 overlap between NY PM and CBDR
+    detected = isForex ? 'CBDR' : 'New York PM';
+  }
+  else if (totalMins >= 16*60 && totalMins < 20*60)     detected = isForex ? 'CBDR' : null;
+
+  const sessEl = document.getElementById('t-session');
+  const hint   = document.getElementById('session-auto-hint');
+  const sessionNames = {
+    'Asia':             '🌏 Asia (19:00–00:00 NY)',
+    'London':           '🇬🇧 London (01:00–05:00 NY)',
+    'New York AM':      '🇺🇸 New York AM (07:00–10:00 NY)',
+    'London Close KZ':  '🔕 London Close KZ (10:00–12:00 NY)',
+    'New York PM':      '🌆 New York PM (13:30–16:00 NY)',
+    'CBDR':             '📏 CBDR (14:00–20:00 NY) — Currencies only',
+  };
+
+  if(detected){
+    sessEl.value = detected;
+    hint.style.display = 'block';
+    hint.innerHTML = `⚡ Session auto-detected: <strong>${sessionNames[detected]}</strong>`;
+    handleSessionChange(); // trigger CBDR warning if needed
+  } else {
+    hint.style.display = 'block';
+    hint.style.background = 'rgba(255,214,0,.08)';
+    hint.style.borderColor = 'rgba(255,214,0,.3)';
+    hint.style.color = 'var(--yellow)';
+    hint.innerHTML = `⏱️ Time <strong>${timeStr} NY</strong> — no active session. Select manually.`;
+  }
+}
+
 function handlePairChange(){
   const sess=document.getElementById('t-session').value;
   const pair=document.getElementById('t-pair').value;
@@ -2022,6 +2101,8 @@ function resetForm(){
   document.getElementById('limit-alert').style.display='none';
   document.getElementById('cbdr-warning').style.display='none';
   document.getElementById('cbdr-pair-warning').style.display='none';
+  const hint=document.getElementById('session-auto-hint');
+  if(hint){hint.style.display='none';hint.style.background='';hint.style.borderColor='';hint.style.color='';}
   clearUpload();
 }
 
